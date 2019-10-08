@@ -229,7 +229,8 @@ def main():
     nn.fit(X_train, Y_train, learningRate, epochs, regLambda, batchSize)
 
     plotDecisionBoundary(nn, X, Y)
-
+    Y_predict=test(X_test,nn)
+    metrics=getPerformanceScores(Y_test, Y_predict)
 if __name__ == "__main__":
     main()
     
