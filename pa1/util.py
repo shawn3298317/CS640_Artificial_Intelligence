@@ -120,10 +120,93 @@ def getConfusionMatrix(YTrue, YPredict):
     YPredict : numpy array
         This array contains the predictions.
     Returns
-    CM : numpy matrix
-        The confusion matrix.
+    CM : square numpy matrix
+        The confusion matrix as shown below
+                    Predicted
+                    1 0
+                    _ _
+        Actual  1|
+                0|
     """
-    pass
+    tp = 0
+    fn = 0
+    fp = 0
+    tn = 0
+    for i in range(YTrue.shape[0]):
+        if (YPredict[i] == YTrue[i] == 1):
+            tp += 1
+        if (YPredict[i] == YTrue[i] == 0):
+            tn += 1
+        if (YPredict[i] == 1 and YTrue[i] == 0):
+            fp += 1
+        if (YPredict[i] == 0 and YTrue[i] == 1):
+            fn += 1
+    return np.matrix([[tp, fn], [fp, tn]])
+
+def getAccuracy(cm):
+    """
+    Computes the accuracy .
+    Parameters
+    ----------
+    CM : square numpy matrix
+        The confusion matrix.
+    Returns
+    accuracy : float
+        The accuracy
+    """
+    n = cm.shape[0]
+    numerator=0
+    for i in range(n):
+        numerator += cm.item(i, i)
+    accuracy = numerator / np.sum(cm)
+    return accuracy
+
+def getPrecision(cm):
+    """
+    Computes the precision
+    Parameters
+    ----------
+    CM : square numpy matrix
+        The confusion matrix.
+    Returns
+    precision : float
+        The precision
+    """
+    # assuming only a 2X2 matrix
+    numerator = cm.item(0, 0)
+    precision = numerator / np.sum(cm.T[0])
+    return precision
+
+def getRecall(cm):
+    """
+    Computes the recall
+    Parameters
+    ----------
+    CM : square numpy matrix
+        The confusion matrix.
+    Returns
+    recall : float
+        The recall
+    """
+    # assuming only a 2X2 matrix
+    numerator = cm.item(0, 0)
+    recall = numerator / np.sum(cm[0])
+    return recall
+
+def getF1(precision,recall):
+    """
+    Computes the f1
+    Parameters
+    ----------
+    precision : float
+        Precision of the model
+    recall : float
+        Recall of the model
+    Returns
+    f1 : float
+        The f1
+    """
+    return 2*recall*precision/(precision+recall)
 
 def getPerformanceScores(YTrue, YPredict):
     """
@@ -142,4 +225,11 @@ def getPerformanceScores(YTrue, YPredict):
     "f1" : float}
         This should be a dictionary.
     """
-    pass
+    cm=getConfusionMatrix(YTrue, YPredict)
+    # accuracy has the leading elements / total number of elements
+    accuracy=getAccuracy(cm)
+    precision=getPrecision(cm)
+    recall=getRecall(cm)
+    f1=getF1(recall,precision)
+
+    return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
