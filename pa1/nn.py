@@ -71,12 +71,14 @@ class NeuralNetwork:
         Logging.debug("b_0: %s " % repr(self.b_0.shape))
         Logging.debug("b_1: %s " % repr(self.b_1.shape))
 
-    def predict(self, X):
+    def predict(self, X, threshold=0.5):
         """
         Predicts the labels for each sample in X.
         Parameters
         X : numpy matrix
             The matrix containing sample features for testing.
+        threshold : float
+            The threshold for the predictions
         Returns
         -------
         YPredict : numpy array
@@ -84,7 +86,7 @@ class NeuralNetwork:
         ----------
         """
         y_hat = self.forward(X)
-        YPredict = np.where(self.y_hat > 0.5, 1, 0)
+        YPredict = np.where(self.y_hat > threshold, 1, 0)
 
         return YPredict, y_hat
 

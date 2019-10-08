@@ -244,3 +244,73 @@ def getPerformanceScores(YTrue, YPredict):
 
     return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
 
+def getFPR(cm):
+    """
+    Computes the recall
+    Parameters
+    ----------
+    CM : square numpy matrix
+        The confusion matrix.
+    Returns
+    FPR : float
+        The FPR
+    """
+    # assuming only a 2X2 matrix
+    numerator = cm.item(1, 0)
+    FPR = numerator / np.sum(cm[1])
+    return FPR
+
+def get_TPR_FPR(YTest,YPred):
+    """
+    Returns the TPR, FPR.
+    Parameters
+    ----------
+    YTest : numpy array
+        This array contains the ground truth.
+    YPred : numpy array
+        This array contains the predictions.
+
+    Returns
+    TPR : float
+        True positive rate
+    FPR : float
+        False positive rate
+    """
+    cm=getConfusionMatrix(YTest, YPred)
+    TPR=getRecall(cm)
+    FPR=getFPR(cm)
+    return TPR, FPR
+
+def get_plot_ROC(model,XTest,YTest):
+    """
+    Plots the ROC curve.
+    Parameters
+    ----------
+    model : NeuralNetwork object
+        This should be a trained NN model.
+    XTest : numpy matrix
+        The matrix containing samples features (not indices) for testing.
+    YTest : numpy array
+        This array contains the ground truth.
+    Returns
+    plt : matplot lib object
+        The ROC plot
+    """
+
+    # for each threshold
+    thresholds=np.arange(0,1,0.1)
+    fprs=[]
+    tprs=[]
+    # get TPR, FPR
+    for threshold in thresholds:
+        YPred,_=model.predict(XTest,threshold)
+        tpr, fpr = get_TPR_FPR(YTest,YPred)
+        tprs.append(tpr)
+        fprs.append(fpr)
+    # add to X,Y
+    plt.plot(fprs,tprs)
+    plt.title("ROC Curve")
+    plt.xlabel("FPR")
+    plt.ylabel("TPR")
+    # add to plot
+    return plt

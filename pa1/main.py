@@ -37,3 +37,5 @@ if __name__ == "__main__":
     test_labels = test(X_test, model)
     metrics=getPerformanceScores(Y_test, test_labels)
     Logging.info("Performance metrics: {}".format(metrics))
+    plt = get_plot_ROC(model,X_test,Y_test)
+    plt.show()
