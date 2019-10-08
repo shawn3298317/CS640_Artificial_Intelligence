@@ -66,7 +66,7 @@ def plotDecisionBoundary(model, X, Y):
     x1_array, x2_array = np.meshgrid(np.arange(-4, 4, 0.01), np.arange(-4, 4, 0.01))
     grid_coordinates = np.c_[x1_array.ravel(), x2_array.ravel()]
     if model:
-        Z, y_hat = model.predict(grid_coordinates)
+        Z = model.predict(grid_coordinates)
         # loss = model.getCost(Y, y_hat)
         Z = Z.reshape(x1_array.shape)
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
@@ -118,7 +118,7 @@ def test(XTest, model):
         The predictions of X.
     """
     
-    test_labels, y_hats = model.predict(XTest)
+    test_labels = model.predict(XTest)
     return test_labels
 
 def getConfusionMatrix(YTrue, YPredict):
@@ -299,19 +299,21 @@ def get_plot_ROC(model,XTest,YTest):
     """
 
     # for each threshold
-    thresholds=np.arange(0,1,0.1)
+    thresholds=np.arange(0,1.01,0.01)
     fprs=[]
     tprs=[]
     # get TPR, FPR
     for threshold in thresholds:
-        YPred,_=model.predict(XTest,threshold)
+        YPred = model.predict(XTest,threshold)
         tpr, fpr = get_TPR_FPR(YTest,YPred)
         tprs.append(tpr)
         fprs.append(fpr)
     # add to X,Y
-    plt.plot(fprs,tprs)
+    plt.plot(fprs, tprs)
     plt.title("ROC Curve")
     plt.xlabel("FPR")
     plt.ylabel("TPR")
+    plt.xlim(-0.05, 1.05)
+    plt.ylim(-0.05, 1.05)
     # add to plot
     return plt
