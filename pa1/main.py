@@ -39,8 +39,9 @@ if __name__ == "__main__":
     if args["task"] != "regression":
         metrics = getPerformanceScores(Y_test, test_labels)
         Logging.info("Performance metrics: {}".format(metrics))
-        plt = get_plot_ROC(model,X_test,Y_test)
-        plt.show()
+        plts = get_plot_ROC(model,X_test,Y_test)
+        for plt in plts:
+            plt.show()
     else:
         y_predict = model.predict(X_test)
         test_cost = model.getCost(Y_test, y_predict)
