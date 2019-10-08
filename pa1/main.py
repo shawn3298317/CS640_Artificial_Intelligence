@@ -12,10 +12,11 @@ if __name__ == "__main__":
         "NNodes": 20,
         "activate": relu,
         "deltaActivate": d_relu,
-        "learningRate": 0.15,
+        "learningRate": 0.015,
         "epochs": 200,
         "regLambda": 0.01,
         "batchSize": 20,
+        # "task": "classification"
         "task": "regression"
     }
     Logging.info("HyperParams:")
@@ -35,7 +36,12 @@ if __name__ == "__main__":
     Logging.info("Y test shape: {}".format(Y_test.shape))
     model = train(X_train, Y_train, args)
     test_labels = test(X_test, model)
-    metrics=getPerformanceScores(Y_test, test_labels)
-    Logging.info("Performance metrics: {}".format(metrics))
-    plt = get_plot_ROC(model,X_test,Y_test)
-    plt.show()
+    if args["task"] != "regression":
+        metrics = getPerformanceScores(Y_test, test_labels)
+        Logging.info("Performance metrics: {}".format(metrics))
+        plt = get_plot_ROC(model,X_test,Y_test)
+        plt.show()
+    else:
+        y_predict = model.predict(X_test)
+        test_cost = model.getCost(Y_test, y_predict)
+        Logging.info("Test Loss: %.3f" % test_cost)

@@ -87,9 +87,12 @@ class NeuralNetwork:
         ----------
         """
         y_hat = self.forward(X)
-        YPredict = np.where(self.y_hat > threshold, 1, 0)
+        if self.task == "regression":
+            YPredict = y_hat
+        else:
+            YPredict = np.where(self.y_hat > threshold, 1, 0)
 
-        return YPredict, y_hat
+        return YPredict
 
     def forward(self, X):
         # Perform matrix multiplication and activation twice (one for each layer).
@@ -116,6 +119,8 @@ class NeuralNetwork:
 
         self.y_hat = final_activation(self.a_2) # = BT x 1
         Logging.debug("y_hat: %s" % repr(self.y_hat.shape))
+
+        return self.y_hat
 
     def backpropagate(self, X, Y):
         # Compute loss / cost using the getCost function.
