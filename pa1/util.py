@@ -5,6 +5,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from nn import NeuralNetwork
+from math_util import *
+from Logging import Logging
+
 def getData(data_dir, fn_x, fn_y):
     '''
     Returns
@@ -19,7 +23,8 @@ def getData(data_dir, fn_x, fn_y):
     # Write your codes here:
     x_path = data_dir + fn_x
     y_path = data_dir + fn_y
-    print("Loading X from %s...\nLoading Y from %s..." % (x_path, y_path))
+    Logging.info("Loading X from %s..." % x_path)
+    Logging.info("Loading Y from %s..." % y_path)
     X = pd.read_csv(x_path, sep=",", header=None).values
     Y = pd.read_csv(y_path, sep=",", header=None).values
 
@@ -45,7 +50,7 @@ def splitData(X, Y, K = 5):
 
     N = math.floor(X.shape[0] / K * (K-1))
     train_ind, test_ind = shuffled_ind[:N], shuffled_ind[N:]
-    print("Training set size: %i %s\nTesting set size: %i %s" % (len(train_ind), repr(train_ind[:5]), len(test_ind), repr(test_ind[:5])))
+    # print("Training set size: %i %s\nTesting set size: %i %s" % (len(train_ind), repr(train_ind[:5]), len(test_ind), repr(test_ind[:5])))
 
     return (train_ind, test_ind)
 
@@ -61,7 +66,8 @@ def plotDecisionBoundary(model, X, Y):
     x1_array, x2_array = np.meshgrid(np.arange(-4, 4, 0.01), np.arange(-4, 4, 0.01))
     grid_coordinates = np.c_[x1_array.ravel(), x2_array.ravel()]
     if model:
-        Z = model.predict(grid_coordinates)
+        Z, y_hat = model.predict(grid_coordinates)
+        # loss = model.getCost(Y, y_hat)
         Z = Z.reshape(x1_array.shape)
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
     plt.scatter(X[:, 0], X[:, 1], c=Y[:, 0], s=5, cmap=plt.cm.bwr)
@@ -84,15 +90,17 @@ def train(XTrain, YTrain, args):
         This should be the trained NN object.
     """
     # 1. Initializes a network object with given args.
-
-
+    nn = NeuralNetwork(args["NNodes"], args["activate"], args["deltaActivate"])
+    
     # 2. Train the model with the function "fit".
     # (hint: use the plotDecisionBoundary function to visualize after training)
-
+    # Parameters TODO: arguments or script
+    # Neural Network Execution
+    nn.fit(XTrain, YTrain, args["learningRate"], args["epochs"], args["regLambda"], args["batchSize"])
+    plotDecisionBoundary(nn, XTrain, YTrain)
 
     # 3. Return the model.
-
-    pass
+    return nn
 
 def test(XTest, model):
     """
@@ -108,7 +116,9 @@ def test(XTest, model):
     YPredict : numpy array
         The predictions of X.
     """
-    pass
+    
+    test_labels, y_hats = model.predict(XTest)
+    return test_labels
 
 def getConfusionMatrix(YTrue, YPredict):
     """
@@ -143,3 +153,6 @@ def getPerformanceScores(YTrue, YPredict):
         This should be a dictionary.
     """
     pass
+
+
+
