@@ -1,5 +1,6 @@
 import datetime
 
+# LOG_LEVEL = 'DEBUG' # Possible inputs: DEBUG, INFO, WARNING
 LOG_LEVEL = 'INFO' # Possible inputs: DEBUG, INFO, WARNING
 
 class Logging:
