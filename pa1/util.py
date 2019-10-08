@@ -90,14 +90,15 @@ def train(XTrain, YTrain, args):
         This should be the trained NN object.
     """
     # 1. Initializes a network object with given args.
-    nn = NeuralNetwork(args["NNodes"], args["activate"], args["deltaActivate"])
+    nn = NeuralNetwork(args["NNodes"], args["activate"], args["deltaActivate"], args["task"])
     
     # 2. Train the model with the function "fit".
     # (hint: use the plotDecisionBoundary function to visualize after training)
     # Parameters TODO: arguments or script
     # Neural Network Execution
     nn.fit(XTrain, YTrain, args["learningRate"], args["epochs"], args["regLambda"], args["batchSize"])
-    plotDecisionBoundary(nn, XTrain, YTrain)
+    if args["task"] != "regression":
+        plotDecisionBoundary(nn, XTrain, YTrain)
 
     # 3. Return the model.
     return nn

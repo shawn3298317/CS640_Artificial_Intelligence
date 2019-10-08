@@ -10,11 +10,12 @@ def data_iterator(X, Y, batch_size):
         yield(X[i*batch_size: (i+1)*batch_size], Y[i*batch_size: (i+1)*batch_size])
 
 class NeuralNetwork:
-    def __init__(self, NNodes, activate, deltaActivate):
+    def __init__(self, NNodes, activate, deltaActivate, task):
         self.NNodes = NNodes # the number of nodes in the hidden layer
         self.activate = activate # a function used to activate
         self.deltaActivate = deltaActivate # the derivative of activate
         self.count = 0
+        self.task = task
 
     def fit(self, X, Y, learningRate, epochs, regLambda, batchSize=5):
         """
@@ -95,6 +96,7 @@ class NeuralNetwork:
         # (hint: add a bias term before multiplication)
         
         # input layer to 1st hidden layer
+        Logging.debug("X: {}, W1: {}, b_0:{}".format(X.shape, self.W_1.shape, self.b_0.shape))
         self.a_1 = (np.matmul(self.W_1, X.T) + self.b_0).T # W1^T * X + B_0 | W1=num_nodes_hidden x 2(input nodes), X = BTx2, a1 = BT x num_nodes_hidden
         Logging.debug("a_1: %s" % repr(self.a_1.shape))
         
@@ -107,7 +109,12 @@ class NeuralNetwork:
         #TODO: np.repeat(self.b_1, self.batch_size, axis=1)
         Logging.debug("a_2: %s" % repr(self.a_2.shape))
         
-        self.y_hat = sigmoid(self.a_2) # = BT x 1
+        if self.task == "regression":
+            final_activation = relu
+        else:
+            final_activation = sigmoid
+
+        self.y_hat = final_activation(self.a_2) # = BT x 1
         Logging.debug("y_hat: %s" % repr(self.y_hat.shape))
 
     def backpropagate(self, X, Y):
@@ -118,31 +125,31 @@ class NeuralNetwork:
 
         # Compute gradient for each layer.
         g = (self.y_hat - Y) / d_sigmoid(self.a_2)    # BTx1 / BTx1 = BT x 1
-        Logging.debug("g_loss: {}, {}".format(g, g.shape))
+        Logging.debug("g_loss: {}".format(g.shape))
         
         # TODO: for loop for variable hidden layers
         
         # Hidden Layer
         g = g * d_sigmoid(self.a_2)   # g = BT x 1
-        Logging.debug("g_a2: {}, {}".format(g, g.shape))
+        Logging.debug("g_a2: {}".format(g.shape))
         
         grad_b_1 = np.sum(g, axis=0, keepdims=True) + self.reg_lambda*self.b_1  # g = BT x 1
         grad_W_2 = np.matmul(self.h_1.T, g) + self.reg_lambda*self.W_2 # TODO: include lambda  # g = BT x 1, h1 = BT x num_nodes_hidden, grad_w2 = num_nodes_hidden x 1
-        Logging.debug("grad_b_1: {}, {}".format(grad_b_1, grad_b_1.shape))
-        Logging.debug("grad_W_2: {}, {}".format(grad_W_2, grad_W_2.shape))
+        Logging.debug("grad_b_1: {}".format(grad_b_1.shape))
+        Logging.debug("grad_W_2: {}".format(grad_W_2.shape))
 
         g = np.matmul(g, self.W_2.T) # g=BT x 1, w2 = #num_nodes_hidden x 1, g(result) = BT x num_nodes_hidden
-        Logging.debug("g_h1: {}, {}".format(g, g.shape))
+        Logging.debug("g_h1: {}".format(g.shape))
 
         # Input Layer
         g = g * self.deltaActivate(self.a_1)   # g = BT x num_nodes_hidden, a_1 = BT x num_nodes_hidden
-        Logging.debug("g_a1: {}, {}".format(g, g.shape)) # BT x num_nodes_hidden
+        Logging.debug("g_a1: {}".format(g.shape)) # BT x num_nodes_hidden
         
         grad_b_0 = np.sum(g, axis=0, keepdims=True).T + self.reg_lambda*self.b_0  # g = BT x num_nodes_hidden, b0 = BT x num_nodes_hidden
         grad_W_1 = np.matmul(g.T, X) + self.reg_lambda*self.W_1 # g = BT x num_nodes_hidden, X = BTx2, grad_w1 = num_nodes_hidden x2
         
-        Logging.debug("grad_b_0: {}, {}".format(grad_b_0, grad_b_0.shape))
-        Logging.debug("grad_W_1: {}, {}".format(grad_W_1, grad_W_1.shape))
+        Logging.debug("grad_b_0: {}".format(grad_b_0.shape))
+        Logging.debug("grad_W_1: {}".format(grad_W_1.shape))
 
         # Update weight matrices w/t stochastic gradient descent
         self.W_2 -= self.lr * grad_W_2 / self.batch_size
@@ -150,15 +157,25 @@ class NeuralNetwork:
         self.W_1 -= self.lr * grad_W_1 / self.batch_size
         self.b_0 -= self.lr * grad_b_0 / self.batch_size
 
-        Logging.debug("Updated W_2: {}, {}".format(self.W_2, self.W_2.shape))
-        Logging.debug("Updated b_1: {}, {}".format(self.b_1, self.b_1.shape))
-        Logging.debug("Updated W_1: {}, {}".format(self.W_2, self.W_2.shape))
-        Logging.debug("Updated b_0: {}, {}".format(self.b_0, self.b_0.shape))
+        Logging.debug("Updated W_2: {}".format(self.W_2.shape))
+        Logging.debug("Updated b_1: {}".format(self.b_1.shape))
+        Logging.debug("Updated W_1: {}".format(self.W_2.shape))
+        Logging.debug("Updated b_0: {}".format(self.b_0.shape))
 
     def getCost(self, YTrue, YPredict):
         # Compute loss / cost in terms of crossentropy.
         # (hint: your regularization term should appear here)
-        return np.mean(-1 * (YTrue * np.log(YPredict) + (1 - YTrue) * np.log(1 - YPredict)), axis = 0)
+
+        # flatten all params
+        thetas = np.concatenate([self.W_2.ravel(), self.b_1.ravel(), self.W_1.ravel(), self.b_0.ravel()]).ravel()
+        Logging.debug("Theta shape: {}".format(thetas.shape))
+        regular_term = self.reg_lambda * np.linalg.norm(thetas) / YTrue.shape[0]
+
+        if self.task == "regression":
+            return np.mean(np.linalg.norm(YTrue - YPredict, axis=1)) + regular_term
+             
+        else:
+            return np.mean(-1 * (YTrue * np.log(YPredict) + (1 - YTrue) * np.log(1 - YPredict)), axis = 0) + regular_term
 
 
 # TODO: should be in train.py
