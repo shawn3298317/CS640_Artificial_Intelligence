@@ -5,10 +5,6 @@ from nn import *
 from math_util import *
 from Logging import Logging
 
-TASK_BINARY_CLASS = "binary_class"
-TASK_MULTI_CLASS = "multi_class"
-TASK_REGRESSION = "regression"
-
 if __name__ == "__main__":
 
     # Hyper param settings
@@ -44,7 +40,8 @@ if __name__ == "__main__":
         metrics = getPerformanceScores(Y_test, test_labels)
         Logging.info("Performance metrics: {}".format(metrics))
         plt = get_plot_ROC(model,X_test,Y_test)
-        plt.show()
+        if plt:
+            plt.show()
     else:
         y_predict = model.predict(X_test)
         test_cost = model.getCost(Y_test, y_predict)
