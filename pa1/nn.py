@@ -166,7 +166,7 @@ class NeuralNetwork:
 
         # flatten all params
         thetas = np.concatenate([self.W_2.ravel(), self.b_1.ravel(), self.W_1.ravel(), self.b_0.ravel()]).ravel()
-        Logging.info("Theta shape: {}".format(thetas.shape))
+        Logging.debug("Theta shape: {}".format(thetas.shape))
         regular_term = self.reg_lambda * np.linalg.norm(thetas) / YTrue.shape[0]
 
         if self.task == "regression":

@@ -9,24 +9,23 @@ if __name__ == "__main__":
 
     # Hyper param settings
     args = {
-        "NNodes": 3,
+        "NNodes": 20,
         "activate": relu,
         "deltaActivate": d_relu,
-        "learningRate": 0.1,
-        "epochs": 500,
+        "learningRate": 0.15,
+        "epochs": 200,
         "regLambda": 0.01,
-        "batchSize": 5,
+        "batchSize": 20,
         "task": "regression"
     }
     Logging.info("HyperParams:")
     for k, v in args.items():
         Logging.info("\t%s: %s" % (k, v))
 
-
     # Data prep.
-    X, Y = getData("data/DataFor640/dataset1/", "LinearX.csv", "LinearY.csv")
+    # X, Y = getData("data/DataFor640/dataset1/", "LinearX.csv", "LinearY.csv")
     # X, Y = getData("data/DataFor640/dataset1/", "NonLinearX.csv", "NonLinearY.csv")
-    # X, Y = getData("data/DataFor640/dataset2/", "Digit_x.csv", "Digit_y.csv")
+    X, Y = getData("data/DataFor640/dataset2/", "Digit_x.csv", "Digit_y.csv")
     train_ind, test_ind = splitData(X, Y, 2)
     X_train, Y_train = X[train_ind], Y[train_ind]
     X_test, Y_test = X[test_ind], Y[test_ind]
