@@ -5,19 +5,23 @@ from nn import *
 from math_util import *
 from Logging import Logging
 
+TASK_BINARY_CLASS = "binary_class"
+TASK_MULTI_CLASS = "multi_class"
+TASK_REGRESSION = "regression"
+
 if __name__ == "__main__":
 
     # Hyper param settings
     args = {
-        "NNodes": 20,
+        "NNodes": 3,
         "activate": relu,
         "deltaActivate": d_relu,
         "learningRate": 0.015,
-        "epochs": 200,
+        "epochs": 5,
         "regLambda": 0.01,
         "batchSize": 20,
-        # "task": "classification"
-        "task": "regression"
+        "task": TASK_MULTI_CLASS
+        # "task": "regression"
     }
     Logging.info("HyperParams:")
     for k, v in args.items():

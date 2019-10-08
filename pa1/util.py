@@ -26,8 +26,10 @@ def getData(data_dir, fn_x, fn_y):
     Logging.info("Loading X from %s..." % x_path)
     Logging.info("Loading Y from %s..." % y_path)
     X = pd.read_csv(x_path, sep=",", header=None).values
-    Y = pd.read_csv(y_path, sep=",", header=None).values
-
+    Y = pd.read_csv(y_path, sep=",", header=None)
+    K = len(Y[0].unique())
+    Y = np.array([np.eye(K)[int(y[0])] for y in Y.values])
+    print(Y.shape)
     # Hint: use print(X.shape) to check if your results are valid.
     return X, Y
 
