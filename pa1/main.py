@@ -9,15 +9,15 @@ if __name__ == "__main__":
 
     # Hyper param settings
     args = {
-        "NNodes": 20,
+        "NNodes": 3,
         "activate": relu,
         "deltaActivate": d_relu,
         "learningRate": 0.015,
-        "epochs": 200,
+        "epochs": 5,
         "regLambda": 0.01,
         "batchSize": 20,
-        # "task": "classification"
-        "task": "regression"
+        "task": TASK_MULTI_CLASS
+        # "task": "regression"
     }
     Logging.info("HyperParams:")
     for k, v in args.items():
@@ -40,7 +40,8 @@ if __name__ == "__main__":
         metrics = getPerformanceScores(Y_test, test_labels)
         Logging.info("Performance metrics: {}".format(metrics))
         plt = get_plot_ROC(model,X_test,Y_test)
-        plt.show()
+        if plt:
+            plt.show()
     else:
         y_predict = model.predict(X_test)
         test_cost = model.getCost(Y_test, y_predict)
