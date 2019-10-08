@@ -36,3 +36,5 @@ if __name__ == "__main__":
     Logging.info("Y test shape: {}".format(Y_test.shape))
     model = train(X_train, Y_train, args)
     test_labels = test(X_test, model)
+    metrics=getPerformanceScores(Y_test, test_labels)
+    Logging.info("Performance metrics: {}".format(metrics))
