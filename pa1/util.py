@@ -33,7 +33,6 @@ def getData(data_dir, fn_x, fn_y):
     Y = pd.read_csv(y_path, sep=",", header=None)
     K = len(Y[0].unique())
     Y = np.array([np.eye(K)[int(y[0])] for y in Y.values])
-    print(Y.shape)
     # Hint: use print(X.shape) to check if your results are valid.
     return X, Y
 
@@ -76,7 +75,7 @@ def plotDecisionBoundary(model, X, Y):
         # loss = model.getCost(Y, y_hat)
         Z = Z.reshape(x1_array.shape)
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
-    plt.scatter(X[:, 0], X[:, 1], c=np.argmax(Y), s=5, cmap=plt.cm.bwr)
+    plt.scatter(X[:, 0], X[:, 1], c=Y[:, 0], s=5, cmap=plt.cm.bwr)
     plt.show()
 
 def train(XTrain, YTrain, args):
