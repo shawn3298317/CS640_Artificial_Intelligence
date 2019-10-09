@@ -32,10 +32,10 @@ def main():
 		# "task": "regression"
 	}
 
-	find_best_test_val(args, 'NNodes', [1,2,3,4,5])
-	find_best_test_val(args, 'regLambda', [1,2,3,4,5])
-	find_best_test_val(args, 'learningRate', [1,2,3,4,5])
-	find_best_test_val(args, 'epochs', [1,2,3])
+	find_best_test_val(args, 'NNodes', [1,2,3,4,5])	# TODO: change test vals
+	find_best_test_val(args, 'regLambda', [1,2,3,4,5]) # TODO: change test vals
+	find_best_test_val(args, 'learningRate', [1,2,3,4,5]) # TODO: change test vals
+	find_best_test_val(args, 'epochs', [1,2,3]) # TODO: change test vals
 
 if __name__ == "__main__":
 	main()
