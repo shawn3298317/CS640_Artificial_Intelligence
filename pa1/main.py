@@ -41,7 +41,6 @@ if __name__ == "__main__":
         Logging.info("Performance metrics: {}".format(metrics))
         plts = get_plot_ROC(model,X_test,Y_test)
         for plt in plts:
-
             plt.show()
     else:
         y_predict = model.predict(X_test)
