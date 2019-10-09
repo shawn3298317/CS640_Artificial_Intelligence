@@ -9,6 +9,10 @@ from nn import NeuralNetwork
 from math_util import *
 from Logging import Logging
 
+TASK_BINARY_CLASS = "binary_class"
+TASK_MULTI_CLASS = "multi_class"
+TASK_REGRESSION = "regression"
+
 def getData(data_dir, fn_x, fn_y):
     '''
     Returns
@@ -16,9 +20,21 @@ def getData(data_dir, fn_x, fn_y):
     X : numpy matrix
         Input data samples.
     Y : numpy matrix
-        Input data labels.
+        Input one-hot labels.
     '''
-    pass
+    # TO-DO for this part:
+    # Use your preferred method to read the csv files.
+    # Write your codes here:
+    x_path = data_dir + fn_x
+    y_path = data_dir + fn_y
+    Logging.info("Loading X from %s..." % x_path)
+    Logging.info("Loading Y from %s..." % y_path)
+    X = pd.read_csv(x_path, sep=",", header=None).values
+    Y = pd.read_csv(y_path, sep=",", header=None)
+    K = len(Y[0].unique())
+    Y = np.array([np.eye(K)[int(y[0])] for y in Y.values])
+    # Hint: use print(X.shape) to check if your results are valid.
+    return X, Y
 
 def splitData(X, Y, K = 5):
     '''
@@ -60,7 +76,19 @@ def train(XTrain, YTrain, args):
     NN : NeuralNetwork object
         This should be the trained NN object.
     """
-    pass
+    # 1. Initializes a network object with given args.
+    nn = NeuralNetwork(args["NNodes"], args["activate"], args["deltaActivate"], args["task"])
+    
+    # 2. Train the model with the function "fit".
+    # (hint: use the plotDecisionBoundary function to visualize after training)
+    # Parameters TODO: arguments or script
+    # Neural Network Execution
+    nn.fit(XTrain, YTrain, args["learningRate"], args["epochs"], args["regLambda"], args["batchSize"])
+    if args["task"] == TASK_BINARY_CLASS:
+        plotDecisionBoundary(nn, XTrain, YTrain)
+
+    # 3. Return the model.
+    return nn
 
 def test(XTest, model):
     """
@@ -85,9 +113,9 @@ def getConfusionMatrix(YTrue, YPredict):
     Parameters
     ----------
     YTrue : numpy matrix
-        This matrix contains the ground truth.
+        This array contains the ground truth.
     YPredict : numpy matrix
-        This matrix contains the predictions.
+        This array contains the predictions.
     Returns
     CM : square numpy matrix
         The confusion matrix as shown below
@@ -108,6 +136,22 @@ def getConfusionMatrix(YTrue, YPredict):
         cm[YTrue[i]][YPredict[i]] = cm[YTrue[i]][YPredict[i]] + 1
 
     return np.matrix(cm)
+
+    # tp = 0
+    # fn = 0
+    # fp = 0
+    # tn = 0
+    # for i in range(YTrue.shape[0]):
+    #     if (YPredict[i] == YTrue[i] == 1):
+    #         tp += 1
+    #     if (YPredict[i] == YTrue[i] == 0):
+    #         tn += 1
+    #     if (YPredict[i] == 1 and YTrue[i] == 0):
+    #         fp += 1
+    #     if (YPredict[i] == 0 and YTrue[i] == 1):
+    #         fn += 1
+    # return np.matrix([[tp, fn], [fp, tn]])
+
 
 def getAccuracy(cm):
     """
@@ -200,9 +244,9 @@ def getPerformanceScores(YTrue, YPredict):
     Parameters
     ----------
     YTrue : numpy matrix
-        This matrix contains the one hot ground truth.
+        This array contains the ground truth.
     YPredict : numpy matrix
-        This matrix contains the one hot predictions.
+        This array contains the predictions.
     Returns
     {"CM" : numpy matrix,
     "accuracy" : float,
@@ -211,14 +255,15 @@ def getPerformanceScores(YTrue, YPredict):
     "f1" : numpy array}
         This should be a dictionary.
     """
-    cm=getConfusionMatrix(YTrue, YPredict)
-    # accuracy has the leading elements / total number of elements
-    accuracy=getAccuracy(cm)
-    precision=getPrecision(cm)
-    recall=getRecall(cm)
-    f1=getF1(recall,precision)
+    pass
+    # cm=getConfusionMatrix(YTrue, YPredict)
+    # # accuracy has the leading elements / total number of elements
+    # accuracy=getAccuracy(cm)
+    # precision=getPrecision(cm)
+    # recall=getRecall(cm)
+    # f1=getF1(recall,precision)
 
-    return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
+    # return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
 
 def getFPR(cm):
     """
@@ -249,9 +294,9 @@ def get_TPR_FPR(YTest,YPred):
     Returns the TPR, FPR.
     Parameters
     ----------
-    YTest : numpy array
+    YTest : numpy matrix
         This array contains the ground truth.
-    YPred : numpy array
+    YPred : numpy matrix
         This array contains the predictions.
 
     Returns
@@ -264,6 +309,11 @@ def get_TPR_FPR(YTest,YPred):
     TPRs=getRecall(cm)
     FPRs=getFPR(cm)
     return TPRs, FPRs
+
+    # cm=getConfusionMatrix(YTest, YPred)
+    # TPR=getRecall(cm)
+    # FPR=getFPR(cm)
+    # return TPR, FPR
 
 
 def get_plot_ROC(model, XTest, YTest):
@@ -281,6 +331,7 @@ def get_plot_ROC(model, XTest, YTest):
     plt : matplot lib object
         The ROC plot
     """
+
     # for each threshold
     thresholds = np.arange(0, 1.01, 0.01)
     fprs = []

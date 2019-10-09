@@ -55,6 +55,7 @@ class NeuralNetwork:
                 Logging.debug("Back propagating")
                 # 2. Backward progate once. Use the function "backpropagate" here!
                 self.backpropagate(x_batch, y_batch)
+
             self.count = 0
 
     def initialize_param(self):
@@ -108,16 +109,16 @@ class NeuralNetwork:
         Logging.debug("h_1: %s" % repr(self.h_1.shape))
         
         # output layer
-        self.a_2 = np.matmul(self.h_1, self.W_2) + self.b_1 # a2 = BT x 1, h1= BT x num_nodes_hidden, W2 = num_nodes_hidden x 1, b1 = BTx1
+        self.a_2 = np.matmul(self.h_1, self.W_2) + self.b_1.T # a2 = BT x 1, h1= BT x num_nodes_hidden, W2 = num_nodes_hidden x 1, b1 = BTx1
         #TODO: np.repeat(self.b_1, self.batch_size, axis=1)
         Logging.debug("a_2: %s" % repr(self.a_2.shape))
         
         if self.task == "regression":
             final_activation = relu
         else:
-            final_activation = sigmoid
+            final_activation = softmax
 
-        self.y_hat = final_activation(self.a_2) # = BT x 1
+        self.y_hat = final_activation(self.a_2) # = BT x K
         Logging.debug("y_hat: %s" % repr(self.y_hat.shape))
 
         return self.y_hat
@@ -129,18 +130,20 @@ class NeuralNetwork:
         self.count += 1
 
         # Compute gradient for each layer.
-        g = (self.y_hat - Y) / d_sigmoid(self.a_2)    # BTx1 / BTx1 = BT x 1
-        Logging.debug("g_loss: {}".format(g.shape))
+        g = (self.y_hat - Y)
+        Logging.debug("g_a2: {}".format(g.shape))
+
+        # / d_sigmoid(self.a_2)    # BTx1 / BTx1 = BT x 1
+        # Logging.debug("g_loss: {}".format(g.shape))
         
         # TODO: for loop for variable hidden layers
-        
+
         # Hidden Layer
-        g = g * d_sigmoid(self.a_2)   # g = BT x 1
-        Logging.debug("g_a2: {}".format(g.shape))
+        #g = g * d_sigmoid(self.a_2)   # g = BT x 1
         
-        grad_b_1 = np.sum(g, axis=0, keepdims=True) + self.reg_lambda*self.b_1  # g = BT x 1
-        grad_W_2 = np.matmul(self.h_1.T, g) + self.reg_lambda*self.W_2 # TODO: include lambda  # g = BT x 1, h1 = BT x num_nodes_hidden, grad_w2 = num_nodes_hidden x 1
+        grad_b_1 = np.sum(g, axis=0, keepdims=True).T + self.reg_lambda*self.b_1  # g = BT x 1
         Logging.debug("grad_b_1: {}".format(grad_b_1.shape))
+        grad_W_2 = np.matmul(self.h_1.T, g) + self.reg_lambda*self.W_2 # TODO: include lambda  # g = BT x 1, h1 = BT x num_nodes_hidden, grad_w2 = num_nodes_hidden x 1
         Logging.debug("grad_W_2: {}".format(grad_W_2.shape))
 
         g = np.matmul(g, self.W_2.T) # g=BT x 1, w2 = #num_nodes_hidden x 1, g(result) = BT x num_nodes_hidden
@@ -180,7 +183,9 @@ class NeuralNetwork:
             return np.mean(np.linalg.norm(YTrue - YPredict, axis=1)) + regular_term
              
         else:
-            return np.mean(-1 * (YTrue * np.log(YPredict) + (1 - YTrue) * np.log(1 - YPredict)), axis = 0) + regular_term
+            # print(np.sum(YPredict, axis=0))
+            return np.mean(-YTrue*np.log(YPredict)) + regular_term
+            # return np.mean(-1 * (YTrue * np.log(YPredict) + (1 - YTrue) * np.log(1 - YPredict)), axis = 0) + regular_term
 
 
 # TODO: should be in train.py
