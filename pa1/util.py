@@ -47,8 +47,7 @@ def splitData(X, Y, K = 5):
         sample in the data is used for testing while the 0th, 1st, 2nd, and 3rd samples
         are for training.
     '''
-
-    # Make sure you shuffle each train list.
+        # Make sure you shuffle each train list.
     assert(X.shape[0] == Y.shape[0])
     shuffled_ind = list(range(X.shape[0]))
     random.shuffle(shuffled_ind)
@@ -77,6 +76,7 @@ def plotDecisionBoundary(model, X, Y):
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
     plt.scatter(X[:, 0], X[:, 1], c=Y[:, 0], s=5, cmap=plt.cm.bwr)
     plt.show()
+
 
 def train(XTrain, YTrain, args):
     """
@@ -122,7 +122,6 @@ def test(XTest, model):
     YPredict : numpy matrix
         The predictions of X.
     """
-    
     test_labels = model.predict(XTest)
     return test_labels
 
@@ -139,12 +138,23 @@ def getConfusionMatrix(YTrue, YPredict):
     CM : square numpy matrix
         The confusion matrix as shown below
                     Predicted
-                    1 0
-                    _ _
-        Actual  1|
+                    2 1 0
+                    _ _ _
+        Actual  2|
+                1|
                 0|
     """
-    pass
+    YTrue = convert_to_labels(YTrue)
+    YPredict = convert_to_labels(YPredict)
+
+    num_classes = np.unique(YTrue).shape[0]
+    cm = np.zeros((num_classes, num_classes))
+
+    for i in range(YTrue.shape[0]):
+        cm[YTrue[i]][YPredict[i]] = cm[YTrue[i]][YPredict[i]] + 1
+
+    return np.matrix(cm)
+
     # tp = 0
     # fn = 0
     # fp = 0
@@ -159,6 +169,7 @@ def getConfusionMatrix(YTrue, YPredict):
     #     if (YPredict[i] == 0 and YTrue[i] == 1):
     #         fn += 1
     # return np.matrix([[tp, fn], [fp, tn]])
+
 
 def getAccuracy(cm):
     """
@@ -186,13 +197,20 @@ def getPrecision(cm):
     CM : square numpy matrix
         The confusion matrix.
     Returns
-    precision : float
-        The precision
+    precision : numpy array
+        The class wise precision
     """
-    # assuming only a 2X2 matrix
-    numerator = cm.item(0, 0)
-    precision = numerator / np.sum(cm.T[0])
-    return precision
+    n = cm.shape[0]
+    numerator=0
+    precisions=[]
+    for i in range(n):
+        numerator = cm.item(i, i)
+        if(np.sum(cm.T[i])==0):
+            precisions.append(0)
+        else:
+            precision = numerator/np.sum(cm.T[i])
+            precisions.append(precision)
+    return np.array(precisions)
 
 def getRecall(cm):
     """
@@ -202,28 +220,41 @@ def getRecall(cm):
     CM : square numpy matrix
         The confusion matrix.
     Returns
-    recall : float
-        The recall
+    recall : numpy array
+        The class wise recall
     """
-    # assuming only a 2X2 matrix
-    numerator = cm.item(0, 0)
-    recall = numerator / np.sum(cm[0])
-    return recall
+    n = cm.shape[0]
+    numerator=0
+    recalls=[]
+    for i in range(n):
+        numerator = cm.item(i, i)
+        if(np.sum(cm[i])==0):
+            recalls.append(0)
+        else:
+            recall = numerator/np.sum(cm[i])
+            recalls.append(recall)
+    return np.array(recalls)
 
-def getF1(precision,recall):
+def getF1(precisions,recalls):
     """
     Computes the f1
     Parameters
     ----------
-    precision : float
-        Precision of the model
-    recall : float
-        Recall of the model
+    precision : numpy array
+        Class wise Precision of the model
+    recall : numpy array
+        Class wise Recall of the model
     Returns
-    f1 : float
-        The f1
+    f1 : numpy array
+        The class wise f1 score
     """
-    return 2*recall*precision/(precision+recall)
+    f1s=[]
+    for i in range(recalls.shape[0]):
+        if(recalls[i]==0 and precisions[i]==0):
+            f1s.append(0)
+        else:
+            f1s.append(2*recalls[i]*precisions[i]/(precisions[i]+recalls[i]))
+    return f1s
 
 def getPerformanceScores(YTrue, YPredict):
     """
@@ -237,9 +268,9 @@ def getPerformanceScores(YTrue, YPredict):
     Returns
     {"CM" : numpy matrix,
     "accuracy" : float,
-    "precision" : float,
-    "recall" : float,
-    "f1" : float}
+    "precision" : numpy array,
+    "recall" : numpy array,
+    "f1" : numpy array}
         This should be a dictionary.
     """
     pass
@@ -260,13 +291,21 @@ def getFPR(cm):
     CM : square numpy matrix
         The confusion matrix.
     Returns
-    FPR : float
-        The FPR
+    FPR : numpy array
+        The numpy array FPR
     """
-    # assuming only a 2X2 matrix
-    numerator = cm.item(1, 0)
-    FPR = numerator / np.sum(cm[1])
-    return FPR
+    n = cm.shape[0]
+    numerator=0
+    fprs=[]
+    for i in range(n):
+        numerator = np.sum(cm.T[i])-cm.item(i, i)
+        denominator=np.sum(cm)-np.sum(cm[i])
+        if(denominator==0):
+            fprs.append(0)
+        else:
+            fpr = numerator/denominator
+            fprs.append(fpr)
+    return np.array(fprs)
 
 def get_TPR_FPR(YTest,YPred):
     """
@@ -284,14 +323,18 @@ def get_TPR_FPR(YTest,YPred):
     FPR : float
         False positive rate
     """
-    pass
+    cm=getConfusionMatrix(YTest, YPred)
+    TPRs=getRecall(cm)
+    FPRs=getFPR(cm)
+    return TPRs, FPRs
 
     # cm=getConfusionMatrix(YTest, YPred)
     # TPR=getRecall(cm)
     # FPR=getFPR(cm)
     # return TPR, FPR
 
-def get_plot_ROC(model,XTest,YTest):
+
+def get_plot_ROC(model, XTest, YTest):
     """
     Plots the ROC curve.
     Parameters
@@ -306,23 +349,69 @@ def get_plot_ROC(model,XTest,YTest):
     plt : matplot lib object
         The ROC plot
     """
-    pass
+
     # for each threshold
-    # thresholds=np.arange(0,1.01,0.01)
-    # fprs=[]
-    # tprs=[]
-    # # get TPR, FPR
-    # for threshold in thresholds:
-    #     YPred = model.predict(XTest,threshold)
-    #     tpr, fpr = get_TPR_FPR(YTest,YPred)
-    #     tprs.append(tpr)
-    #     fprs.append(fpr)
-    # # add to X,Y
-    # plt.plot(fprs, tprs)
-    # plt.title("ROC Curve")
-    # plt.xlabel("FPR")
-    # plt.ylabel("TPR")
-    # plt.xlim(-0.05, 1.05)
-    # plt.ylim(-0.05, 1.05)
-    # # add to plot
-    # return plt
+    thresholds = np.arange(0, 1.01, 0.01)
+    fprs = []
+    tprs = []
+    # get TPR, FPR
+    for threshold in thresholds:
+        YPred = model.predict(XTest, threshold)
+        tpr, fpr = get_TPR_FPR(YTest, YPred)
+        tprs.append(tpr)
+        fprs.append(fpr)
+    # add to X,Y
+    fprs = np.matrix(fprs)
+    tprs = np.matrix(tprs)
+
+    plts = []
+    count = 0
+
+    fprs = fprs.T
+    tprs = tprs.T
+
+    for i in range(fprs.shape(0)):
+        plt.plot(fprs[i], tprs[i])
+        plt.title("ROC Curve for class " + str(count))
+        plt.xlabel("FPR")
+        plt.ylabel("TPR")
+        plt.xlim(-0.05, 1.05)
+        plt.ylim(-0.05, 1.05)
+        count += 1
+        plts.append(plt)
+    return plts
+
+# def get_plot_ROC(model,XTest,YTest):
+#     """
+#     Plots the ROC curve.
+#     Parameters
+#     ----------
+#     model : NeuralNetwork object
+#         This should be a trained NN model.
+#     XTest : numpy matrix
+#         The matrix containing samples features (not indices) for testing.
+#     YTest : numpy matrix
+#         This array contains the ground truth.
+#     Returns
+#     plt : matplot lib object
+#         The ROC plot
+#     """
+#     # for each threshold
+#     thresholds=np.arange(0,1.01,0.01)
+#     fprs=[]
+#     tprs=[]
+#     # get TPR, FPR
+#     for threshold in thresholds:
+#         YPred = model.predict(XTest,threshold)
+#         tpr, fpr = get_TPR_FPR(YTest,YPred)
+#         tprs.append(tpr)
+#         fprs.append(fpr)
+#     # add to X,Y
+#     plt.plot(fprs, tprs)
+#     plt.title("ROC Curve")
+#     plt.xlabel("FPR")
+#     plt.ylabel("TPR")
+#     plt.xlim(-0.05, 1.05)
+#     plt.ylim(-0.05, 1.05)
+#     # add to plot
+#     return plt
