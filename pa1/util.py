@@ -53,7 +53,7 @@ def splitData(X, Y, K = 5):
         sample in the data is used for testing while the 0th, 1st, 2nd, and 3rd samples
         are for training.
     '''
-        # Make sure you shuffle each train list.
+    # Make sure you shuffle each train list.
     assert(X.shape[0] == Y.shape[0])
     shuffled_ind = list(range(X.shape[0]))
     random.shuffle(shuffled_ind)
@@ -80,7 +80,6 @@ def plotDecisionBoundary(model, X, Y):
         Z = Z.reshape(x1_array.shape)
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
     plt.scatter(X[:, 0], X[:, 1], c=(1 - Y[:, 0]), s=5, cmap=plt.cm.bwr)
-    # plt.scatter(X[:, 0], X[:, 1], c=np.argmax(Y), s=5, cmap=plt.cm.bwr)
 
 
 def train(XTrain, YTrain, args):
