@@ -47,7 +47,16 @@ def splitData(X, Y, K = 5):
         sample in the data is used for testing while the 0th, 1st, 2nd, and 3rd samples
         are for training.
     '''
-    pass
+        # Make sure you shuffle each train list.
+    assert(X.shape[0] == Y.shape[0])
+    shuffled_ind = list(range(X.shape[0]))
+    random.shuffle(shuffled_ind)
+
+    N = math.floor(X.shape[0] / K * (K-1))
+    train_ind, test_ind = shuffled_ind[:N], shuffled_ind[N:]
+    # print("Training set size: %i %s\nTesting set size: %i %s" % (len(train_ind), repr(train_ind[:5]), len(test_ind), repr(test_ind[:5])))
+
+    return (train_ind, test_ind)
 
 def plotDecisionBoundary(model, X, Y):
     """
