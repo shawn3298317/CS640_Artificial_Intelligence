@@ -13,4 +13,4 @@ def d_sigmoid(x):
     return sigmoid(x) * (1 - sigmoid(x))
 
 def softmax(x):
-    return np.exp(x) / np.sum(np.exp(x), axis=0)
+    return np.exp(x) / np.sum(np.exp(x), axis=1, keepdims=True)

@@ -77,10 +77,10 @@ def plotDecisionBoundary(model, X, Y):
     grid_coordinates = np.c_[x1_array.ravel(), x2_array.ravel()]
     if model:
         Z = model.predict(grid_coordinates)
-        # loss = model.getCost(Y, y_hat)
         Z = Z.reshape(x1_array.shape)
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
     plt.scatter(X[:, 0], X[:, 1], c=Y[:, 0], s=5, cmap=plt.cm.bwr)
+    # plt.scatter(X[:, 0], X[:, 1], c=np.argmax(Y), s=5, cmap=plt.cm.bwr)
     plt.show()
 
 
@@ -108,8 +108,8 @@ def train(XTrain, YTrain, args):
     # Parameters TODO: arguments or script
     # Neural Network Execution
     nn.fit(XTrain, YTrain, args["learningRate"], args["epochs"], args["regLambda"], args["batchSize"])
-    if args["task"] == TASK_BINARY_CLASS:
-        plotDecisionBoundary(nn, XTrain, YTrain)
+    # if args["task"] == TASK_BINARY_CLASS:
+    plotDecisionBoundary(nn, XTrain, YTrain)
 
     # 3. Return the model.
     return nn
@@ -128,8 +128,8 @@ def test(XTest, model):
     YPredict : numpy matrix
         The predictions of X.
     """
-    test_labels = model.predict(XTest)
-    return test_labels
+    # test_labels = model.predict(XTest)
+    return model.forward(XTest)
 
 def getConfusionMatrix(YTrue, YPredict):
     """
@@ -151,14 +151,16 @@ def getConfusionMatrix(YTrue, YPredict):
                 0|
     """
     YTrue = convert_to_labels(YTrue)
-    YPredict = convert_to_labels(YPredict)
+    #YPredict = convert_to_labels(YPredict)
+    print(YTrue[:5], YPredict[:5])
 
     num_classes = np.unique(YTrue).shape[0]
     cm = np.zeros((num_classes, num_classes))
-
+    print("\nCM ",cm)
     for i in range(YTrue.shape[0]):
+    # for i in range(YTrue.shape[0]):
         cm[YTrue[i]][YPredict[i]] = cm[YTrue[i]][YPredict[i]] + 1
-
+    print("\nCM after ",cm)
     return np.matrix(cm)
 
     # tp = 0
@@ -328,9 +330,9 @@ def get_TPR_FPR(YTest,YPred):
     FPR : float
         False positive rate
     """
-    cm=getConfusionMatrix(YTest, YPred)
-    TPRs=getRecall(cm)
-    FPRs=getFPR(cm)
+    cm = getConfusionMatrix(YTest, YPred)
+    TPRs = getRecall(cm)
+    FPRs = getFPR(cm)
     return TPRs, FPRs
 
     # cm=getConfusionMatrix(YTest, YPred)
@@ -363,6 +365,7 @@ def get_plot_ROC(model, XTest, YTest):
     for threshold in thresholds:
         YPred = model.predict(XTest, threshold)
         tpr, fpr = get_TPR_FPR(YTest, YPred)
+        # Logging.info("ROC test: threshold {}, tpr {}, fpr {}".format(threshold, tpr, fpr))
         tprs.append(tpr)
         fprs.append(fpr)
     # add to X,Y
@@ -375,10 +378,11 @@ def get_plot_ROC(model, XTest, YTest):
     fprs = fprs.T
     tprs = tprs.T
 
-    Logging.debug("fprs={}".format(fprs))
-    Logging.debug("tprs={}".format(tprs))
+    # Logging.debug("fprs={}".format(fprs))
+    # Logging.debug("tprs={}".format(tprs))
 
     for i in range(fprs.shape[0]):
+        print("\nfprs", fprs)
         plt.plot(fprs[i], tprs[i])
         plt.title("ROC Curve for class " + str(count))
         plt.xlabel("FPR")
@@ -389,37 +393,42 @@ def get_plot_ROC(model, XTest, YTest):
         plts.append(plt)
     return plts
 
-# def get_plot_ROC(model,XTest,YTest):
-#     """
-#     Plots the ROC curve.
-#     Parameters
-#     ----------
-#     model : NeuralNetwork object
-#         This should be a trained NN model.
-#     XTest : numpy matrix
-#         The matrix containing samples features (not indices) for testing.
-#     YTest : numpy matrix
-#         This array contains the ground truth.
-#     Returns
-#     plt : matplot lib object
-#         The ROC plot
-#     """
-#     # for each threshold
-#     thresholds=np.arange(0,1.01,0.01)
-#     fprs=[]
-#     tprs=[]
-#     # get TPR, FPR
-#     for threshold in thresholds:
-#         YPred = model.predict(XTest,threshold)
-#         tpr, fpr = get_TPR_FPR(YTest,YPred)
-#         tprs.append(tpr)
-#         fprs.append(fpr)
-#     # add to X,Y
-#     plt.plot(fprs, tprs)
-#     plt.title("ROC Curve")
-#     plt.xlabel("FPR")
-#     plt.ylabel("TPR")
-#     plt.xlim(-0.05, 1.05)
-#     plt.ylim(-0.05, 1.05)
-#     # add to plot
-#     return plt
+def get_plot_ROC_2(model,XTest,YTest):
+    """
+    Plots the ROC curve.
+    Parameters
+    ----------
+    model : NeuralNetwork object
+        This should be a trained NN model.
+    XTest : numpy matrix
+        The matrix containing samples features (not indices) for testing.
+    YTest : numpy matrix
+        This array contains the ground truth.
+    Returns
+    plt : matplot lib object
+        The ROC plot
+    """
+    # for each threshold
+    thresholds = np.arange(0,1.01,0.01)
+    fprs = []
+    tprs = []
+    # get TPR, FPR
+    for threshold in thresholds:
+        YPred = model.predict(XTest,threshold)
+        tpr, fpr = get_TPR_FPR(YTest,YPred)
+        Logging.info("ROC test: threshold {}, tpr {} ({}), fpr {} ({})".format(threshold, tpr[1], tpr.shape, fpr[1], fpr.shape))
+        tprs.append(tpr[1])
+        fprs.append(fpr[1])
+    print(np.array(fprs).shape)
+    print(np.array(tprs).shape)
+    input()
+    # add to X,Y
+    # plt.plot([f[1] for f in fprs], [t[1] for t in tprs])
+    plt.plot(fprs, tprs)
+    plt.title("ROC Curve")
+    plt.xlabel("FPR")
+    plt.ylabel("TPR")
+    plt.xlim(-0.05, 1.05)
+    plt.ylim(-0.05, 1.05)
+    # add to plot
+    return plt

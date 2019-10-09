@@ -5,6 +5,10 @@ import datetime
 from math_util import *
 from Logging import Logging
 
+TASK_BINARY_CLASS = "binary_class"
+TASK_MULTI_CLASS = "multi_class"
+TASK_REGRESSION = "regression"
+
 def data_iterator(X, Y, batch_size):
     for i in range(X.shape[0]//batch_size):
         yield(X[i*batch_size: (i+1)*batch_size], Y[i*batch_size: (i+1)*batch_size])
@@ -55,7 +59,6 @@ class NeuralNetwork:
                 Logging.debug("Back propagating")
                 # 2. Backward progate once. Use the function "backpropagate" here!
                 self.backpropagate(x_batch, y_batch)
-
             self.count = 0
 
     def initialize_param(self):
@@ -73,7 +76,7 @@ class NeuralNetwork:
         Logging.debug("b_0: %s " % repr(self.b_0.shape))
         Logging.debug("b_1: %s " % repr(self.b_1.shape))
 
-    def predict(self, X, threshold=0.5):
+    def predict(self, X, threshold=None):
         """
         Predicts the labels for each sample in X.
         Parameters
@@ -88,12 +91,12 @@ class NeuralNetwork:
         ----------
         """
         y_hat = self.forward(X)
-        if self.task == "regression":
-            YPredict = y_hat
-        else:
-            YPredict = np.where(self.y_hat > threshold, 1, 0)
 
-        return YPredict
+        if threshold:
+            # print("SHAPEEEE!!!", y_hat.shape)
+            return np.where(self.y_hat[:, 1] > threshold, 1, 0)
+        else:
+            return np.argmax(y_hat, axis=1)
 
     def forward(self, X):
         # Perform matrix multiplication and activation twice (one for each layer).
@@ -181,10 +184,9 @@ class NeuralNetwork:
 
         if self.task == "regression":
             return np.mean(np.linalg.norm(YTrue - YPredict, axis=1)) + regular_term
-             
         else:
             # print(np.sum(YPredict, axis=0))
-            return np.mean(-YTrue*np.log(YPredict)) + regular_term
+            return np.mean(-np.sum(YTrue*np.log(YPredict), axis=1)) + regular_term
             # return np.mean(-1 * (YTrue * np.log(YPredict) + (1 - YTrue) * np.log(1 - YPredict)), axis = 0) + regular_term
 
 
