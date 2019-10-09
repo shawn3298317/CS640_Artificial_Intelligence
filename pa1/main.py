@@ -36,6 +36,11 @@ if __name__ == "__main__":
     Logging.info("Y test shape: {}".format(Y_test.shape))
     model = train(X_train, Y_train, args)
     test_labels = test(X_test, model)
+
+    # Logging.info("test_labels={}".format(test_labels))
+    # metrics = getPerformanceScores(Y_test, test_labels)
+    # Logging.info("Performance metrics: {}".format(metrics))
+
     if args["task"] != "regression":
         metrics = getPerformanceScores(Y_test, test_labels)
         Logging.info("Performance metrics: {}".format(metrics))

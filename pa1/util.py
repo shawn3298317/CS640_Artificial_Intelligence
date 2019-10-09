@@ -13,6 +13,12 @@ TASK_BINARY_CLASS = "binary_class"
 TASK_MULTI_CLASS = "multi_class"
 TASK_REGRESSION = "regression"
 
+def convert_to_labels(y):
+    ans = []
+    for row in y:
+        ans.append(np.argmax(row))
+    return np.array(ans)
+
 def getData(data_dir, fn_x, fn_y):
     '''
     Returns
@@ -273,15 +279,14 @@ def getPerformanceScores(YTrue, YPredict):
     "f1" : numpy array}
         This should be a dictionary.
     """
-    pass
-    # cm=getConfusionMatrix(YTrue, YPredict)
-    # # accuracy has the leading elements / total number of elements
-    # accuracy=getAccuracy(cm)
-    # precision=getPrecision(cm)
-    # recall=getRecall(cm)
-    # f1=getF1(recall,precision)
+    cm=getConfusionMatrix(YTrue, YPredict)
+    # accuracy has the leading elements / total number of elements
+    accuracy=getAccuracy(cm)
+    precision=getPrecision(cm)
+    recall=getRecall(cm)
+    f1=getF1(recall,precision)
 
-    # return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
+    return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
 
 def getFPR(cm):
     """
@@ -370,7 +375,10 @@ def get_plot_ROC(model, XTest, YTest):
     fprs = fprs.T
     tprs = tprs.T
 
-    for i in range(fprs.shape(0)):
+    Logging.debug("fprs={}".format(fprs))
+    Logging.debug("tprs={}".format(tprs))
+
+    for i in range(fprs.shape[0]):
         plt.plot(fprs[i], tprs[i])
         plt.title("ROC Curve for class " + str(count))
         plt.xlabel("FPR")
