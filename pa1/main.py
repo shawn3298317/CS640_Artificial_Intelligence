@@ -5,20 +5,7 @@ from nn import *
 from math_util import *
 from Logging import Logging
 
-if __name__ == "__main__":
-
-    # Hyper param settings
-    args = {
-        "NNodes": 10,
-        "activate": relu,
-        "deltaActivate": d_relu,
-        "learningRate": 0.0015,
-        "epochs": 200,
-        "regLambda": 0.00,
-        "batchSize": 20,
-        "task": TASK_MULTI_CLASS
-        # "task": "regression"
-    }
+def main(args):
     Logging.info("HyperParams:")
     for k, v in args.items():
         Logging.info("\t%s: %s" % (k, v))
@@ -49,3 +36,23 @@ if __name__ == "__main__":
         plt.show()
     test_cost = model.getCost(Y_test, y_predict)
     Logging.info("Test Loss: %.3f" % test_cost)
+
+    return metrics
+
+if __name__ == "__main__":
+
+    # Hyper param settings
+    args = {
+        "NNodes": 10,
+        "activate": relu,
+        "deltaActivate": d_relu,
+        "learningRate": 0.0015,
+        "epochs": 200,
+        "regLambda": 0.00,
+        "batchSize": 20,
+        "task": TASK_MULTI_CLASS
+        # "task": "regression"
+    }
+    main(args)
+
+    
