@@ -60,7 +60,6 @@ def splitData(X, Y, K = 5):
 
     N = math.floor(X.shape[0] / K * (K-1))
     train_ind, test_ind = shuffled_ind[:N], shuffled_ind[N:]
-    # print("Training set size: %i %s\nTesting set size: %i %s" % (len(train_ind), repr(train_ind[:5]), len(test_ind), repr(test_ind[:5])))
 
     return (train_ind, test_ind)
 
@@ -73,15 +72,15 @@ def plotDecisionBoundary(model, X, Y):
     X : input data
     Y : input labels
     """
+    plt.figure()
     x1_array, x2_array = np.meshgrid(np.arange(-4, 4, 0.01), np.arange(-4, 4, 0.01))
     grid_coordinates = np.c_[x1_array.ravel(), x2_array.ravel()]
     if model:
         Z = model.predict(grid_coordinates)
         Z = Z.reshape(x1_array.shape)
         plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
-    plt.scatter(X[:, 0], X[:, 1], c=Y[:, 0], s=5, cmap=plt.cm.bwr)
+    plt.scatter(X[:, 0], X[:, 1], c=(1 - Y[:, 0]), s=5, cmap=plt.cm.bwr)
     # plt.scatter(X[:, 0], X[:, 1], c=np.argmax(Y), s=5, cmap=plt.cm.bwr)
-    plt.show()
 
 
 def train(XTrain, YTrain, args):
@@ -108,8 +107,6 @@ def train(XTrain, YTrain, args):
     # Parameters TODO: arguments or script
     # Neural Network Execution
     nn.fit(XTrain, YTrain, args["learningRate"], args["epochs"], args["regLambda"], args["batchSize"])
-    # if args["task"] == TASK_BINARY_CLASS:
-    plotDecisionBoundary(nn, XTrain, YTrain)
 
     # 3. Return the model.
     return nn
@@ -152,15 +149,11 @@ def getConfusionMatrix(YTrue, YPredict):
     """
     YTrue = convert_to_labels(YTrue)
     #YPredict = convert_to_labels(YPredict)
-    print(YTrue[:5], YPredict[:5])
 
     num_classes = np.unique(YTrue).shape[0]
     cm = np.zeros((num_classes, num_classes))
-    print("\nCM ",cm)
     for i in range(YTrue.shape[0]):
-    # for i in range(YTrue.shape[0]):
         cm[YTrue[i]][YPredict[i]] = cm[YTrue[i]][YPredict[i]] + 1
-    print("\nCM after ",cm)
     return np.matrix(cm)
 
     # tp = 0
@@ -281,12 +274,12 @@ def getPerformanceScores(YTrue, YPredict):
     "f1" : numpy array}
         This should be a dictionary.
     """
-    cm=getConfusionMatrix(YTrue, YPredict)
+    cm = getConfusionMatrix(YTrue, YPredict)
     # accuracy has the leading elements / total number of elements
-    accuracy=getAccuracy(cm)
-    precision=getPrecision(cm)
-    recall=getRecall(cm)
-    f1=getF1(recall,precision)
+    accuracy = getAccuracy(cm)
+    precision = getPrecision(cm)
+    recall = getRecall(cm)
+    f1 = getF1(recall,precision)
 
     return {"CM" : cm, "accuracy" : accuracy, "precision" : precision, "recall" : recall,  "f1" : f1}
 
@@ -382,7 +375,6 @@ def get_plot_ROC(model, XTest, YTest):
     # Logging.debug("tprs={}".format(tprs))
 
     for i in range(fprs.shape[0]):
-        print("\nfprs", fprs)
         plt.plot(fprs[i], tprs[i])
         plt.title("ROC Curve for class " + str(count))
         plt.xlabel("FPR")
@@ -393,7 +385,7 @@ def get_plot_ROC(model, XTest, YTest):
         plts.append(plt)
     return plts
 
-def get_plot_ROC_2(model,XTest,YTest):
+def get_plot_ROC_2(model, XTest, YTest):
     """
     Plots the ROC curve.
     Parameters
@@ -409,21 +401,19 @@ def get_plot_ROC_2(model,XTest,YTest):
         The ROC plot
     """
     # for each threshold
-    thresholds = np.arange(0,1.01,0.01)
+    thresholds = np.arange(0.01,1.01,0.01)
     fprs = []
     tprs = []
     # get TPR, FPR
     for threshold in thresholds:
         YPred = model.predict(XTest,threshold)
         tpr, fpr = get_TPR_FPR(YTest,YPred)
-        Logging.info("ROC test: threshold {}, tpr {} ({}), fpr {} ({})".format(threshold, tpr[1], tpr.shape, fpr[1], fpr.shape))
+        Logging.debug("ROC test: threshold {}, tpr {} ({}), fpr {} ({})".format(threshold, tpr[1], tpr.shape, fpr[1], fpr.shape))
         tprs.append(tpr[1])
         fprs.append(fpr[1])
-    print(np.array(fprs).shape)
-    print(np.array(tprs).shape)
-    input()
     # add to X,Y
     # plt.plot([f[1] for f in fprs], [t[1] for t in tprs])
+    plt.figure()
     plt.plot(fprs, tprs)
     plt.title("ROC Curve")
     plt.xlabel("FPR")
@@ -431,4 +421,3 @@ def get_plot_ROC_2(model,XTest,YTest):
     plt.xlim(-0.05, 1.05)
     plt.ylim(-0.05, 1.05)
     # add to plot
-    return plt
