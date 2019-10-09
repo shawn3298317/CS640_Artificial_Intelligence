@@ -7,3 +7,5 @@ repo for ai hwk
 # Bonus:
  - research on activation functions: sigmoid, hyperbolic, ReLU, weird ReLU
  - mini-batch vs sgd vs all
+
+By Alex Wong, Shawn Lin and Rahul Suresh
