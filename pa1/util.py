@@ -58,7 +58,16 @@ def plotDecisionBoundary(model, X, Y):
     X : input data
     Y : input labels
     """
-    pass
+    x1_array, x2_array = np.meshgrid(np.arange(-4, 4, 0.01), np.arange(-4, 4, 0.01))
+    grid_coordinates = np.c_[x1_array.ravel(), x2_array.ravel()]
+    if model:
+        Z = model.predict(grid_coordinates)
+        # loss = model.getCost(Y, y_hat)
+        Z = Z.reshape(x1_array.shape)
+        plt.contourf(x1_array, x2_array, Z, cmap=plt.cm.bwr)
+    plt.scatter(X[:, 0], X[:, 1], c=Y[:, 0], s=5, cmap=plt.cm.bwr)
+    plt.show()
+
 
 def train(XTrain, YTrain, args):
     """
@@ -104,8 +113,8 @@ def test(XTest, model):
     YPredict : numpy matrix
         The predictions of X.
     """
-    pass
-
+    test_labels = model.predict(XTest)
+    return test_labels
 
 def getConfusionMatrix(YTrue, YPredict):
     """
