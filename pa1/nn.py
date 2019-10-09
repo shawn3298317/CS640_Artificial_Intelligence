@@ -20,6 +20,7 @@ class NeuralNetwork:
         self.deltaActivate = deltaActivate # the derivative of activate
         self.count = 0
         self.task = task
+        self.print_every_n_step = 100
 
     def fit(self, X, Y, learningRate, epochs, regLambda, batchSize=5):
         """
@@ -44,14 +45,17 @@ class NeuralNetwork:
         self.output_dim = Y.shape[1]
 
         self.initialize_param()
-        
+        self.current_epoch = 0
+        self.current_step = 0
+
         # For each epoch, do
-        for ep in range(epochs):
-            Logging.info("Starting %i epoch" % (ep+1)) # DEBUG, INFO, WARNING
+        while self.current_epoch < epochs:
+            self.current_epoch += 1
+            Logging.debug("Starting %i epoch" % (self.current_epoch)) # DEBUG, INFO, WARNING
             # For each training sample (X[i], Y[i]), do
             
             for x_batch, y_batch in data_iterator(X, Y, self.batch_size):
-                
+                self.current_step += 1    
                 Logging.debug("Start forward step!")
                 # 1. Forward propagate once. Use the function "forward" here!
                 self.forward(x_batch)
@@ -93,7 +97,6 @@ class NeuralNetwork:
         y_hat = self.forward(X)
 
         if threshold:
-            # print("SHAPEEEE!!!", y_hat.shape)
             return np.where(self.y_hat[:, 1] > threshold, 1, 0)
         else:
             return np.argmax(y_hat, axis=1)
@@ -129,7 +132,8 @@ class NeuralNetwork:
     def backpropagate(self, X, Y):
         # Compute loss / cost using the getCost function.
         self.loss = self.getCost(Y, self.y_hat)  # Y = BT x 1, y_hat = BT x 1
-        Logging.info("Loss: {} | Batch_count = {}".format(self.loss, self.count))
+        if self.current_step % self.print_every_n_step == 0:
+            Logging.info("Loss: {:.4f} | Ep: {}; Current_step = {}".format(self.loss, self.current_epoch, self.current_step))
         self.count += 1
 
         # Compute gradient for each layer.
