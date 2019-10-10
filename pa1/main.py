@@ -26,7 +26,6 @@ def main(args):
         plotDecisionBoundary(model, X_train, Y_train)
     y_predict = model.predict(X_test)
 
-
     metrics = getPerformanceScores(Y_test, y_predict)
     Logging.info("Confusion metric: \n{}".format(metrics["CM"]))
     Logging.info("Accuracy: {:.4f}".format(metrics["accuracy"]))
@@ -37,7 +36,7 @@ def main(args):
         get_plot_ROC_2(model,X_test,Y_test)
     test_cost = model.getCost(Y_test, model.forward(X_test))
     Logging.info("Test Loss: %.3f" % test_cost)
-    plt.show()
+    # plt.show()
 
     return metrics
 
