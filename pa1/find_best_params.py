@@ -13,24 +13,26 @@ from Logging import Logging
 def test(args):
 	return nnMain(args) # TODO: should plot from here and returns metric. main needs to implement this as well!
 
-def find_best_test_val(args, key, test_vals, output):
-	output.append("Changing {}".format(key))
+def find_best_test_val(args, key, test_vals):
+	Logging.superInfo("Changing {}".format(key))
 	for tv in test_vals:
 		args[key] = tv
-		output.append("Set {} to {}".format(key, tv))
+		Logging.superInfo("Set {} to {}".format(key, tv))
 		Logging.info("find_best_test_val | Modifying {}={}".format(key, tv))
 		metric = test(args)
+		metric['precision'] = np.mean(np.mean(metric['precision']))
+		metric['recall'] = np.mean(np.mean(metric['recall']))
+		metric['f1'] = np.mean(np.mean(metric['f1']))
 
-		output.append(args)
-		output.append(metric)
-		output.append("")
-	output.append("====================")
-	return output
+		Logging.superInfo(args)
+
+		for key in metric.keys():
+			print("{} : {}".format(key, metric[key]))
+
+		Logging.superInfo("")
+		Logging.superInfo("====================")
 
 def main():
-
-	output = []
-
 	args = {
 		"NNodes": 100,
 		"activate": relu,
@@ -40,15 +42,12 @@ def main():
 		"regLambda": 0.1,
 		"batchSize": 20,
 		"task": TASK_MULTI_CLASS
-		# "task": "regression"
 	}
 
-	output = find_best_test_val(args, 'NNodes', [50,100,150,200], output)
-	output = find_best_test_val(args, 'regLambda', [0.0, 0.1, 0.5, 1, 1.5], output)
-	output = find_best_test_val(args, 'learningRate', [0.015, 0.03, 0.15, 0.3, 1.5], output)
-	output = find_best_test_val(args, 'epochs', [100, 200, 300], output)
-	for log in output:
-		Logging.superInfo(log)
+	find_best_test_val(args, 'NNodes', [10, 50,100,150, 200])
+	find_best_test_val(args, 'regLambda', [0.0, 0.1, 0.5, 1, 1.5])
+	find_best_test_val(args, 'learningRate', [0.0075, 0.015, 0.075, 0.15, 0.75])
+	find_best_test_val(args, 'epochs', [10, 100, 200, 300])
 
 if __name__ == "__main__":
 	main()

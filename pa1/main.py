@@ -50,7 +50,7 @@ if __name__ == "__main__":
         "deltaActivate": d_relu,
         "learningRate": 0.015,
         "epochs": 200,
-        "regLambda": 0.00,
+        "regLambda": 0.1,
         "batchSize": 20,
         "task": TASK_MULTI_CLASS
     }
