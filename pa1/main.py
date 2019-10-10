@@ -11,9 +11,9 @@ def main(args):
         Logging.info("\t%s: %s" % (k, v))
 
     # Data prep.
-    # X, Y = getData("data/DataFor640/dataset1/", "LinearX.csv", "LinearY.csv")
+    X, Y = getData("data/DataFor640/dataset1/", "LinearX.csv", "LinearY.csv")
     # X, Y = getData("data/DataFor640/dataset1/", "NonLinearX.csv", "NonLinearY.csv")
-    X, Y = getData("data/DataFor640/dataset2/", "Digit_x.csv", "Digit_y.csv")
+    # X, Y = getData("data/DataFor640/dataset2/", "Digit_x.csv", "Digit_y.csv")
     train_ind, test_ind = splitData(X, Y, 5)
     X_train, Y_train = X[train_ind], Y[train_ind]
     X_test, Y_test = X[test_ind], Y[test_ind]
@@ -36,7 +36,7 @@ def main(args):
         get_plot_ROC_2(model,X_test,Y_test)
     test_cost = model.getCost(Y_test, model.forward(X_test))
     Logging.info("Test Loss: %.3f" % test_cost)
-    # plt.show()
+    plt.show()
 
     return metrics
 
