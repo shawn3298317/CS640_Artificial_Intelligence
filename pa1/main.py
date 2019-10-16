@@ -37,7 +37,7 @@ def main(args):
         get_plot_ROC_2(model,X_val,Y_val)
     test_cost = model.getCost(Y_val, model.forward(X_val))
     Logging.info("Test Loss: %.3f" % test_cost)
-    # plt.show()
+    plt.show()
 
     return metrics
 
