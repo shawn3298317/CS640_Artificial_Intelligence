@@ -1,0 +1,3 @@
+[submodule "pa1/CS640_Artificial_Intelligence.git/pa1"]
+	path = pa1/CS640_Artificial_Intelligence.git/pa1
+	url = https://github.com/shawn3298317/CS640_Artificial_Intelligence.git

@@ -42,7 +42,11 @@ def getData(data_dir, fn_x, fn_y):
     # Hint: use print(X.shape) to check if your results are valid.
     return X, Y
 
-def splitData(X, Y, K = 5):
+def normalize(X):
+    X = (X - np.mean(X, axis=1, keepdims=True)) / np.std(X, axis=1, keepdims=True)
+    return X
+
+def splitData(X, Y, k_fold, K = 5):
     '''
     Returns
     -------
@@ -58,8 +62,10 @@ def splitData(X, Y, K = 5):
     shuffled_ind = list(range(X.shape[0]))
     random.shuffle(shuffled_ind)
 
-    N = math.floor(X.shape[0] / K * (K-1))
-    train_ind, test_ind = shuffled_ind[:N], shuffled_ind[N:]
+    # N = math.floor(X.shape[0] / K * (K-1))
+    N = math.floor(X.shape[0] / K)
+    train_ind = shuffled_ind[:k_fold*N] + shuffled_ind[(k_fold+1)*N:]
+    test_ind = shuffled_ind[k_fold*N: (k_fold+1)*N]
 
     return (train_ind, test_ind)
 
