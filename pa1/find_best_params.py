@@ -39,7 +39,8 @@ def main():
 		"epochs": 200,
 		"regLambda": 0.1,
 		"batchSize": 20,
-		"task": TASK_MULTI_CLASS
+		"task": TASK_MULTI_CLASS,
+		"k_fold": 4
 	}
 
 	find_best_test_val(args, 'NNodes', [1, 10, 50, 100, 200])
