@@ -16,7 +16,7 @@ public class BaseAgent {
 	protected int getStateOfPositionFromBoard(positionTicTacToe position, List<positionTicTacToe> board)
 	{
 		//a helper function to get state of a certain position in the Tic-Tac-Toe board by given position TicTacToe
-		int index = position.x*16+position.y*4+position.z;
+		int index = GameUtil.positionToIndex(position.x, position.y, position.z);
 		return board.get(index).state;
 	}
 
