@@ -3,10 +3,12 @@ import java.util.*;
 public class BaseAgent {
 
 	public int player; //1 for player 1 and 2 for player 2
+	public int opponent_player;
 
 	public BaseAgent(int setPlayer)
 	{
 		player = setPlayer;
+		opponent_player = (player == 2) ? 1 : 2;
 	}
 
 	public void resetAgent() {
