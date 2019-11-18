@@ -12,6 +12,7 @@ def main(args):
 
     # Data prep.
     # X, Y = getData("data/DataFor640/dataset1/", "LinearX.csv", "LinearY.csv")
+    # X = normalize(X)
     # X, Y = getData("data/DataFor640/dataset1/", "NonLinearX.csv", "NonLinearY.csv")
     X, Y = getData("data/DataFor640/dataset2/", "Digit_x.csv", "Digit_y.csv")
     X = normalize(X)
