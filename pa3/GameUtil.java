@@ -27,7 +27,7 @@ static boolean hasXWinLines(List<positionTicTacToe> board, GamePattern pattern) 
 
 static boolean hasYWinLines(List<positionTicTacToe> board, GamePattern pattern) {
 
-	System.out.println("hasYWinLines");
+	// System.out.println("hasYWinLines");
 
 	for(int i = 0; i<4; i++) {	
 		for(int j = 0; j<4;j++)

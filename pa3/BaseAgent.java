@@ -9,6 +9,10 @@ public class BaseAgent {
 		player = setPlayer;
 	}
 
+	public void resetAgent() {
+
+	}
+
 	public String getAgentName() {
 		return new String("BaseAgent");
 	}
