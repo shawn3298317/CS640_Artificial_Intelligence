@@ -6,6 +6,68 @@ static int positionToIndex(int x, int y, int z) {
 	return (x*16 + y*4 + z);
 }
 
+static positionTicTacToe indexToPosition(int index) {
+	return new positionTicTacToe(index/16, (index/4)%4, index%4);
+}
+
+static List<Integer> cornerIndex = new ArrayList<Integer>() {{
+	add(GameUtil.positionToIndex(0, 0, 0));
+	add(GameUtil.positionToIndex(0, 3, 0));
+	add(GameUtil.positionToIndex(3, 0, 0));
+	add(GameUtil.positionToIndex(3, 3, 0));
+	add(GameUtil.positionToIndex(0, 0, 3));
+	add(GameUtil.positionToIndex(0, 3, 3));
+	add(GameUtil.positionToIndex(3, 0, 3));
+	add(GameUtil.positionToIndex(3, 3, 3));
+}};
+
+static int isEnded(List<positionTicTacToe> board) {
+
+	GamePattern pattern = new GamePattern(-1);
+
+	// straight line checks
+	if (GameUtil.hasXWinLines(board, pattern)) {
+		// System.out.println("hasXWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+	if (GameUtil.hasYWinLines(board, pattern)) {
+		// System.out.println("hasYWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+	if (GameUtil.hasZWinLines(board, pattern)) {
+		// System.out.println("hasZWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+
+	// plane diagonal line checks
+	if (GameUtil.hasXZWinLines(board, pattern)) {
+		// System.out.println("hasXYWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+	if (GameUtil.hasYZWinLines(board, pattern)) {
+		// System.out.println("hasYZWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+	if (GameUtil.hasXYWinLines(board, pattern)) {
+		// System.out.println("hasXYWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+
+	// cubic diagonal line checks
+	if (GameUtil.hasXYZWinLines(board, pattern)) {
+		// System.out.println("hasXYZWinLines" + pattern.getValue());
+		return pattern.getValue();
+	}
+
+	if (GameUtil.hasEmptySlots(board)) {
+		return 0; // Continue
+	} else {
+		return -1; // Call Draw
+	}
+
+}
+
+
 static boolean hasXWinLines(List<positionTicTacToe> board, GamePattern pattern) {
 
 	
@@ -179,9 +241,11 @@ static boolean hasEmptySlots(List<positionTicTacToe> board) {
 	
 	for (int i=0;i<board.size();i++) {
 		if (board.get(i).state == 0) {
+			// System.out.println("hasEmptySlots");
 			return true;
 		}
 	}
+	// System.out.println("hasNoEmptySlots!!");
 	return false;
 }
 

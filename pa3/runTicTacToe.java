@@ -20,7 +20,8 @@ public class runTicTacToe {
 	}
 	public void initializePlayers() {
 		player1 = new RandomAgent(1);
-		player2 = new RandomAgent(2);
+		player2 = new MinMaxAgent(2);
+		// player2 = new RandomAgent(2);
 	}
 	public void resetGame() {
 		board = createTicTacToeBoard();
@@ -57,52 +58,7 @@ public class runTicTacToe {
 		int index = position.x*16+position.y*4+position.z;
 		return targetBoard.get(index).state;
 	}
-	private int isEnded()
-	{
-
-		GamePattern pattern = new GamePattern(-1);
-
-		// straight line checks
-		if (GameUtil.hasXWinLines(board, pattern)) {
-			// System.out.println("hasXWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-		if (GameUtil.hasYWinLines(board, pattern)) {
-			// System.out.println("hasYWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-		if (GameUtil.hasZWinLines(board, pattern)) {
-			// System.out.println("hasZWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-
-		// plane diagonal line checks
-		if (GameUtil.hasXZWinLines(board, pattern)) {
-			// System.out.println("hasXYWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-		if (GameUtil.hasYZWinLines(board, pattern)) {
-			// System.out.println("hasYZWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-		if (GameUtil.hasXYWinLines(board, pattern)) {
-			// System.out.println("hasXYWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-
-		// cubic diagonal line checks
-		if (GameUtil.hasXYZWinLines(board, pattern)) {
-			// System.out.println("hasXYZWinLines" + pattern.getValue());
-			return pattern.getValue();
-		}
-
-		if (GameUtil.hasEmptySlots(board)) {
-			return 0; // Continue
-		} else {
-			return -1; // Call Draw
-		}
-
-	}
+	
 	
 	public void printAllWinningLines()
 	{
@@ -170,7 +126,8 @@ public class runTicTacToe {
 		Random rand = new Random();
 		int turn = rand.nextInt(2)+1; //1 = player1's turn, 2 = player2's turn, who go first is randomized 
 		
-		while((result = isEnded())==0) //game loop
+		result = GameUtil.isEnded(board);
+		while (result == 0) //game loop
 		{
 			if(turn == 1)
 			{
@@ -187,11 +144,12 @@ public class runTicTacToe {
 			else 
 			{
 				//exception occurs, stop
-				System.out.println("Error!");
+				System.out.println("Error1!");
 			}
+			result = GameUtil.isEnded(board);
 		}
 		
-			//game is ended
+		//game is ended
 		if(result == 1)
 		{
 			//game ends, player 1 wins 
@@ -220,7 +178,10 @@ public class runTicTacToe {
 		else
 		{
 			//exception occurs, stop
-			System.out.println("Error!");
+			System.out.println("Error2! " + result);	
+			if (verbose) {
+				printBoardTicTacToe(board);	
+			}
 		}
 
 		return result;
@@ -244,8 +205,8 @@ public class runTicTacToe {
 			this.resetGame();
 		}
 
-		System.out.println("Player1 Win Rate: " + player1_won/n);
-		System.out.println("Player2 Win Rate: " + player2_won/n);
+		System.out.println("Player1: " + player1.getAgentName() + " Win Rate = " + player1_won/n);
+		System.out.println("Player2: " + player2.getAgentName() + " Win Rate = " + player2_won/n);
 		System.out.println("Tie Rate: " + tie/n);	
 
 	}
@@ -254,7 +215,6 @@ public class runTicTacToe {
 	//run the game once
 	public static void main(String[] args) {
 
-		//run game loop
 		runTicTacToe rttt = new runTicTacToe();
 
 		int n = 1;
@@ -266,6 +226,11 @@ public class runTicTacToe {
 			verbose = (args[1].equals("--verbose"));
 		}
 		rttt.playNGames(n, verbose);
+		// positionTicTacToe pos = new positionTicTacToe(1, 2, 3);
+		// int index = GameUtil.positionToIndex(pos.x, pos.y, pos.z);
+		// System.out.println("index: " + index);
+		// positionTicTacToe recover = GameUtil.indexToPosition(index);
+		// System.out.println("pos: " + recover.x + " " + recover.y + " " + recover.z);
 	}
 }
 

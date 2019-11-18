@@ -3,6 +3,7 @@ import java.util.*;
 public class RandomAgent extends BaseAgent {
 
 	public int player; //1 for player 1 and 2 for player 2
+	public int opponent_player;
 
 	public RandomAgent(int setPlayer)
 	{
