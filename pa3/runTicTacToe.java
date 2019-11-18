@@ -20,7 +20,7 @@ public class runTicTacToe {
 	}
 	public void initializePlayers() {
 		player1 = new RandomAgent(1);
-		player2 = new MinMaxAgent(2);
+		player2 = new MinMaxAgent(2, 4, false);
 		// player2 = new RandomAgent(2);
 	}
 	public void resetGame() {
@@ -226,11 +226,6 @@ public class runTicTacToe {
 			verbose = (args[1].equals("--verbose"));
 		}
 		rttt.playNGames(n, verbose);
-		// positionTicTacToe pos = new positionTicTacToe(1, 2, 3);
-		// int index = GameUtil.positionToIndex(pos.x, pos.y, pos.z);
-		// System.out.println("index: " + index);
-		// positionTicTacToe recover = GameUtil.indexToPosition(index);
-		// System.out.println("pos: " + recover.x + " " + recover.y + " " + recover.z);
 	}
 }
 
