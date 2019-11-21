@@ -20,7 +20,10 @@ public class runTicTacToe {
 	}
 	public void initializePlayers() {
 		player1 = new RandomAgent(1);
-		player2 = new MinMaxAgent(2, 4, false);
+
+		int depth = 6;
+		System.out.println("Min Max Agent - Depth=" + depth);
+		player2 = new MinMaxAgent(2, depth, false);
 		// player2 = new RandomAgent(2);
 	}
 	public void resetGame() {
@@ -125,7 +128,8 @@ public class runTicTacToe {
 		int result = 0;
 		Random rand = new Random();
 		int turn = rand.nextInt(2)+1; //1 = player1's turn, 2 = player2's turn, who go first is randomized 
-		
+		int move_number = 0;
+
 		result = GameUtil.isEnded(board);
 		while (result == 0) //game loop
 		{
@@ -137,9 +141,11 @@ public class runTicTacToe {
 			}
 			else if(turn == 2)
 			{
+				System.out.println("Move number: " + move_number);
 				positionTicTacToe player2NextMove = player2.getPolicyFromState(board, 2); //2 stands for player 2
 				if (player2.makeMove(player2NextMove, 2, board))
 					turn = 1;
+				move_number++;
 			}
 			else 
 			{
