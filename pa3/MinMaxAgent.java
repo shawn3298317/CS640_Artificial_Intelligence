@@ -21,6 +21,7 @@ public class MinMaxAgent extends BaseAgent {
 	@Override
 	public positionTicTacToe getPolicyFromState(List<positionTicTacToe> board, int player)
 	{
+		long start = System.currentTimeMillis();
 
 		//TODO: this is where you are going to implement your AI algorithm to win the game. The default is an AI randomly choose any available move.
 		// positionTicTacToe myNextMove;
@@ -46,6 +47,11 @@ public class MinMaxAgent extends BaseAgent {
 		}
 
 		System.out.println(myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
+
+		long end = System.currentTimeMillis();
+
+		System.out.println("Time taken: " + (float)(end-start) + "ms.\n---------------------");
+
 		return myNextMove;
 
 	}
