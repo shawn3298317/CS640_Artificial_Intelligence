@@ -27,11 +27,11 @@ static int isEnded(List<positionTicTacToe> board) {
 
 	// straight line checks
 	if (GameUtil.hasXWinLines(board, pattern)) {
-		// System.out.println("hasXWinLines" + pattern.getValue());
+//		System.out.println("hasXWinLines" + pattern.getValue());
 		return pattern.getValue();
 	}
 	if (GameUtil.hasYWinLines(board, pattern)) {
-		// System.out.println("hasYWinLines" + pattern.getValue());
+//		System.out.println("hasYWinLines" + pattern.getValue());
 		return pattern.getValue();
 	}
 	if (GameUtil.hasZWinLines(board, pattern)) {

@@ -26,4 +26,13 @@ public class positionTicTacToe {
 		z = setZ;
 		state = -1;
 	}
+
+	positionTicTacToe create_copy(){
+		return new positionTicTacToe(this.x, this.y, this.y, this.state);
+	}
+
+	@Override
+	public String toString(){
+		return "(" + x + "," + y + "," + z + ")=state(" + state + ")";
+	}
 }
