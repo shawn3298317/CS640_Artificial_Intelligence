@@ -1,6 +1,10 @@
-### 4x4x4 Tic-Tac-Toe AI
+# 4x4x4 Tic-Tac-Toe AI
 
-#### Agents to Implement
+## TODO:
+1. multi-thread min-max agent
+2. RLAgent (DeepQ)
+
+## Agents to Implement
 - Random Agents (baseline)
 - Alpha-Beta Min-max Agent (Value functions??)
 - (can skip) Monte-Carlo Agent (Value functions??)
