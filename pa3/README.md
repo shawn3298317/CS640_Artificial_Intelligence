@@ -1,5 +1,5 @@
 # 4x4x4 Tic-Tac-Toe AI
-
+itest
 ## TODO:
 1. multi-thread min-max agent
 2. RLAgent (DeepQ)
