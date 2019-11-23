@@ -1,71 +1,87 @@
-Min Max Agent - Depth=4
+Min Max Agent - Depth=8
 Move number: 0
 0 0 0
-Time taken: 9.0ms. myNextMove=(0,0,0)=state(-1)
+Time taken: 1630.0ms. myNextMove=(0,0,0)=state(-1)
 ---------------------
 Move number: 1
 0 0 1
-Time taken: 6.0ms. myNextMove=(0,0,1)=state(-1)
+Time taken: 1421.0ms. myNextMove=(0,0,1)=state(-1)
 ---------------------
 Move number: 2
 0 0 2
-Time taken: 5.0ms. myNextMove=(0,0,2)=state(-1)
+Time taken: 1287.0ms. myNextMove=(0,0,2)=state(-1)
 ---------------------
 Move number: 3
 0 0 3
-Time taken: 4.0ms. myNextMove=(0,0,3)=state(-1)
+Time taken: 1398.0ms. myNextMove=(0,0,3)=state(-1)
 ---------------------
 Move number: 4
 0 1 0
-Time taken: 2.0ms. myNextMove=(0,1,0)=state(-1)
+Time taken: 2145.0ms. myNextMove=(0,1,0)=state(-1)
 ---------------------
 Move number: 5
-0 1 2
-Time taken: 2.0ms. myNextMove=(0,1,2)=state(-1)
+0 1 1
+Time taken: 1409.0ms. myNextMove=(0,1,1)=state(-1)
 ---------------------
 Move number: 6
-0 1 3
-Time taken: 3.0ms. myNextMove=(0,1,3)=state(-1)
+0 1 2
+Time taken: 1465.0ms. myNextMove=(0,1,2)=state(-1)
 ---------------------
 Move number: 7
-0 2 0
-Time taken: 1.0ms. myNextMove=(0,2,0)=state(-1)
+0 1 3
+Time taken: 1359.0ms. myNextMove=(0,1,3)=state(-1)
 ---------------------
 Move number: 8
 0 2 1
-Time taken: 2.0ms. myNextMove=(0,2,1)=state(-1)
+Time taken: 1338.0ms. myNextMove=(0,2,1)=state(-1)
 ---------------------
 Move number: 9
 0 2 2
-Time taken: 1.0ms. myNextMove=(0,2,2)=state(-1)
+Time taken: 850.0ms. myNextMove=(0,2,2)=state(-1)
 ---------------------
 Move number: 10
 0 2 3
-Time taken: 1.0ms. myNextMove=(0,2,3)=state(-1)
+Time taken: 968.0ms. myNextMove=(0,2,3)=state(-1)
 ---------------------
 Move number: 11
-0 3 1
-Time taken: 2.0ms. myNextMove=(0,3,1)=state(-1)
+0 3 0
+Time taken: 1356.0ms. myNextMove=(0,3,0)=state(-1)
 ---------------------
 Move number: 12
-0 3 2
-Time taken: 2.0ms. myNextMove=(0,3,2)=state(-1)
+1 0 0
+Time taken: 1524.0ms. myNextMove=(1,0,0)=state(-1)
 ---------------------
 Move number: 13
-1 0 0
-Time taken: 2.0ms. myNextMove=(1,0,0)=state(-1)
+1 0 1
+Time taken: 980.0ms. myNextMove=(1,0,1)=state(-1)
 ---------------------
 Move number: 14
 1 0 2
-Time taken: 2.0ms. myNextMove=(1,0,2)=state(-1)
+Time taken: 845.0ms. myNextMove=(1,0,2)=state(-1)
 ---------------------
 Move number: 15
 1 0 3
-Time taken: 1.0ms. myNextMove=(1,0,3)=state(-1)
+Time taken: 642.0ms. myNextMove=(1,0,3)=state(-1)
 ---------------------
 Move number: 16
-1 1 0
-Time taken: 1.0ms. myNextMove=(1,1,0)=state(-1)
+1 1 3
+Time taken: 519.0ms. myNextMove=(1,1,3)=state(-1)
+---------------------
+Move number: 17
+1 2 1
+Time taken: 371.0ms. myNextMove=(1,2,1)=state(-1)
+---------------------
+Move number: 18
+1 2 2
+Time taken: 460.0ms. myNextMove=(1,2,2)=state(-1)
+---------------------
+Move number: 19
+1 2 3
+Time taken: 325.0ms. myNextMove=(1,2,3)=state(-1)
+---------------------
+Move number: 20
+2 0 0
+Time taken: 259.0ms. myNextMove=(2,0,0)=state(-1)
 ---------------------
 Player1: RandomAgent Win Rate = 0.0
 Player2: MinMaxAgent Win Rate = 1.0
