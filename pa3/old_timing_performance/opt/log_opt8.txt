@@ -3,7 +3,7 @@ Move number: 0
 num of processors avail = 4
 Executor service is shutdown: true
 Next Move: 0 0 0
-Time taken: 38115.0ms. myNextMove=(0,0,0)=state(-1)
+Time taken: 27149.0ms. myNextMove=(0,0,0)=state(-1)
 ---------------------
 Move number: 1
 num of processors avail = 4
