@@ -18,14 +18,11 @@ public class MinMaxAgentOpt extends BaseAgent {
 	private int m_depth;
 	private boolean m_use_corner_score;
 	private ExecutorService executorService;
-	private List<FutureStorage> list;
 
 	public MinMaxAgentOpt(int setPlayer, int depth, boolean m_use_corner_score)
 	{
 		super(setPlayer);
 		m_depth = depth;
-		executorService = Executors.newFixedThreadPool(2);
-		list = new ArrayList<FutureStorage>();
 	}
 
 	@Override
@@ -37,6 +34,12 @@ public class MinMaxAgentOpt extends BaseAgent {
 	public positionTicTacToe getPolicyFromState(List<positionTicTacToe> board, int player)
 	{
 		long start = System.currentTimeMillis();
+        List<FutureStorage> list = new ArrayList<FutureStorage>();
+        this.executorService = Executors.newFixedThreadPool(2);
+		int processors = Runtime.getRuntime().availableProcessors();
+		System.out.println("num of processors avail = " + processors);
+//        System.out.println("board");
+//		System.out.println(board);
 
 		//TODO: this is where you are going to implement your AI algorithm to win the game. The default is an AI randomly choose any available move.
 		// positionTicTacToe myNextMove;
@@ -57,8 +60,8 @@ public class MinMaxAgentOpt extends BaseAgent {
 			};
 
 //			List<positionTicTacToe> board_clone = new ArrayList<positionTicTacToe>(board);
-			System.out.println("board_clone1");
-			System.out.println(board_clone);
+//			System.out.println("board_clone1");
+//			System.out.println(board_clone);
 
 			class minMaxCallable implements Callable<Double> {
 				Double alpha;
@@ -104,27 +107,26 @@ public class MinMaxAgentOpt extends BaseAgent {
 //			};
 
 			Future<Double> f = executorService.submit(minMax);
+			// System.out.println("Added pos:" + pos);
 			list.add(new FutureStorage(f, pos));
 //			board.get(pos).state = 0; // back tracking
 		}
 
 //		System.out.println("Added " + list.size() + " tasks to executorService");
 
-		for(FutureStorage futStorage : list){
+		for(FutureStorage futStorage : list) {
 			try {
 				Future<Double> fut = futStorage.fut;
 				int pos = futStorage.pos;
 
 				//print the return value of Future, notice the output delay in console
 				// because Future.get() waits for task to get completed
-//				System.out.println(fut.get());
-
 				Double cur_value = fut.get();
-				System.out.println("Cur value: " + cur_value + ", pos=" + pos);
 
 				if (cur_value > max_value) {
 					max_value = cur_value;
 					myNextMove = GameUtil.indexToPosition(pos);
+//					System.out.println("cur > max. Set next move to pos(" + pos + ")");
 				}
 				alpha = Math.max(alpha, max_value);
 				if (alpha >= beta)
@@ -132,9 +134,12 @@ public class MinMaxAgentOpt extends BaseAgent {
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
-		}
+		};
 
-		System.out.println(myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
+		executorService.shutdownNow();
+		System.out.println("Executor service is shutdown: " + executorService.isShutdown());
+
+		System.out.println("Next Move: " + myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
 
 		long end = System.currentTimeMillis();
 

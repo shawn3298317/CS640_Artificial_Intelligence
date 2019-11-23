@@ -22,6 +22,8 @@ public class MinMaxAgent extends BaseAgent {
 	public positionTicTacToe getPolicyFromState(List<positionTicTacToe> board, int player)
 	{
 		long start = System.currentTimeMillis();
+		// System.out.println("board");
+		// System.out.println(board);
 
 
 		//TODO: this is where you are going to implement your AI algorithm to win the game. The default is an AI randomly choose any available move.
@@ -32,18 +34,17 @@ public class MinMaxAgent extends BaseAgent {
 		Double alpha = -1000000.0;
 		Double beta = 1000000.0;
 
+
 		for (int pos = 0; pos < board.size(); pos++) {
 			if (board.get(pos).state != 0) {
 				continue; // marked position
 			}
-//			System.out.println("board");
-//			System.out.println(board);
 
 			board.get(pos).state = player;
 			// Double cur_value = minMax(board, 4, false);
-			System.out.println("m_depth-1=" + (m_depth-1) + ",alpha=" + alpha + ", beta=" + beta);
+			// System.out.println("m_depth-1=" + (m_depth-1) + ",alpha=" + alpha + ", beta=" + beta);
 			Double cur_value = minMaxAlphaBeta(board, m_depth-1, alpha, beta, false);
-			System.out.println("cur_value=" + cur_value);
+			// System.out.println("cur_value=" + cur_value);
 			board.get(pos).state = 0; // back tracking
 			if (cur_value > max_value) {
 				max_value = cur_value;
@@ -61,7 +62,6 @@ public class MinMaxAgent extends BaseAgent {
 		System.out.println("Time taken: " + (float)(end-start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
 
 		return myNextMove;
-
 	}
 
 	private Double minMax(List<positionTicTacToe> board, int depth, boolean maximizer) {
@@ -97,7 +97,6 @@ public class MinMaxAgent extends BaseAgent {
 	private Double minMaxAlphaBeta(List<positionTicTacToe> board, int depth, Double alpha, Double beta, boolean maximizer) {
 		
 		if ((depth == 0) || (GameUtil.isEnded(board) != 0)) {
-			System.out.println("GameUtil.isEnded=" + GameUtil.isEnded(board));
 			return getValueFromState(board);
 		}
 

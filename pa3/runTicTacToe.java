@@ -21,9 +21,9 @@ public class runTicTacToe {
 	public void initializePlayers() {
 		player1 = new RandomAgent(1);
 
-		int depth = 4;
+		int depth = 8;
 		System.out.println("Min Max Agent - Depth=" + depth);
-		player2 = new MinMaxAgentOpt(2, depth, false);
+		player2 = new MinMaxAgent(2, depth, false);
 		// player2 = new MinMaxAgent(2, depth, false);
 		// player2 = new RandomAgent(2);
 	}
@@ -149,9 +149,6 @@ public class runTicTacToe {
 				if (player2.makeMove(player2NextMove, 2, board))
 					turn = 1;
 				move_number++;
-				if(move_number == 2){
-					break;
-				}
 			}
 			else 
 			{
