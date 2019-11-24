@@ -22,23 +22,22 @@ public class MinMaxAgentYbwc extends BaseAgent {
 	private int steps_taken;
 	private boolean dynamic_remain_iter;
 	private int remain_iter_reduce_factor;
+	private int threadPool;
 
 	public MinMaxAgentYbwc(int setPlayer, int depth, boolean m_use_corner_score)
 	{
 		super(setPlayer);
 
-		this.remain_iter = 8;
+		this.remain_iter = 2;
 		int px = 2;
-		this.dynamic_remain_iter = false;
-		this.remain_iter_reduce_factor = 8;	// 64 moves. 64/8 = 8 (initial remain_iter)
+		this.dynamic_remain_iter = false;		// TODO: Not implemented yet.
+		this.remain_iter_reduce_factor = 8;		// TODO: Not implemented yet. 64 moves. 64/8 = 8 (initial remain_iter)
 
 		this.m_depth = depth;
 		int processors = Runtime.getRuntime().availableProcessors();
-		int threadPool = processors * px;
+		this.threadPool = processors * px;
 		System.out.println("ri=" + this.remain_iter + ", px=" + px);
 		this.steps_taken = 0;
-
-		this.executorService = Executors.newFixedThreadPool(threadPool);
 	}
 
 	@Override
@@ -50,13 +49,9 @@ public class MinMaxAgentYbwc extends BaseAgent {
 	public positionTicTacToe getPolicyFromState(List<positionTicTacToe> board, int player)
 	{
 		long start = System.currentTimeMillis();
+		this.executorService = Executors.newFixedThreadPool(threadPool);
+
         List<FutureStorage> list = new ArrayList<FutureStorage>();
-//      System.out.println("board");
-//		System.out.println(board);
-
-		//TODO: this is where you are going to implement your AI algorithm to win the game. The default is an AI randomly choose any available move.
-		// positionTicTacToe myNextMove;
-
 		if(dynamic_remain_iter == true){
 			this.remain_iter = ((4 * 4 * 4) - this.steps_taken) / this.remain_iter_reduce_factor;
 		}
@@ -68,7 +63,7 @@ public class MinMaxAgentYbwc extends BaseAgent {
 
 		int futureCount = 0;
 
-		// Run alpha-beta on first branch # todo: maybe do a few branch first?
+		// Run alpha-beta on first < remain_iter branch to find some (local) alpha-beta value to pass to child thread in future.
 		int pos = 0;
 		int iter = 0;
 		for(; pos<board.size() && iter < this.remain_iter; pos++){
@@ -79,7 +74,6 @@ public class MinMaxAgentYbwc extends BaseAgent {
 			}
 
 			board.get(pos).state = player;
-//			System.out.println("Remain_Iter | remain_iter=" + remain_iter + ", m_depth-1=" + (m_depth-1) + ",alpha=" + alpha + ", beta=" + beta);
 			Double cur_value = minMaxAlphaBeta(board, m_depth-1, alpha, beta, false);
 			board.get(pos).state = 0; // back tracking
 			if (cur_value > max_value) {
@@ -91,7 +85,7 @@ public class MinMaxAgentYbwc extends BaseAgent {
 				break;
 		}
 
-		// Continue with multi-threading
+		// Multi-thread on remaining branches using alpha-beta value found from sequential run above.
 		for (; pos < board.size(); pos++) {
 			// Double cur_value = minMax(board, 4, false);
 			if (board.get(pos).state != 0) continue; // marked position
@@ -131,6 +125,7 @@ public class MinMaxAgentYbwc extends BaseAgent {
 			list.add(new FutureStorage(f, pos));
 		}
 
+		// Wait for all the child threads to be completed.
 		for(FutureStorage futStorage : list) {
 			try {
 				Future<Double> fut = futStorage.fut;
@@ -153,16 +148,13 @@ public class MinMaxAgentYbwc extends BaseAgent {
 			}
 		};
 
-//		executorService.shutdownNow();
-//		System.out.println("Executor service is shutdown: " + executorService.isShutdown());
-
+		this.steps_taken++;
+		this.executorService.shutdownNow();
 		System.out.println("Next Move: " + myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
 
 		long end = System.currentTimeMillis();
-
 		System.out.println("Time taken: " + (float)(end-start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
 
-		this.steps_taken++;
 		return myNextMove;
 	}
 

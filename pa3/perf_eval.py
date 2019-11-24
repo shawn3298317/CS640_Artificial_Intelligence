@@ -12,7 +12,7 @@ log_dir = "timing_performance"
 for log_folder in os.listdir(log_dir):
     if log_folder == ".DS_Store":
         continue
-    elif re.match(".*" + "px2" + ".*", log_folder) is None:
+    elif re.match(".*" + str(depth) + ".*", log_folder) is None:
          print("skip " + log_folder)
          continue
     else:

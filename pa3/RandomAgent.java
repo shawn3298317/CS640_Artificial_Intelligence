@@ -24,7 +24,7 @@ public class RandomAgent extends BaseAgent {
 		int seed = 0;
 
 		do {
-			Random rand = new Random(seed++);
+			Random rand = new Random();
 //			System.out.println("c2");
 			int x = rand.nextInt(4);
 			int y = rand.nextInt(4);
