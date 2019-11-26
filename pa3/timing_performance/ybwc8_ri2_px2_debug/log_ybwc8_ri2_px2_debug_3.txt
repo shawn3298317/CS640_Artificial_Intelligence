@@ -1,0 +1,21 @@
+Min Max Agent - Depth=8
+ri=2, px=2
+Move number: 0
+Time taken (debug): 1106.0ms.
+---------------------
+Next Move: 0 0 1
+Time taken: 1780.0ms. myNextMove=(0,0,1)=state(-1)
+---------------------
+Move number: 1
+Time taken (debug): 851.0ms.
+---------------------
+Next Move: 0 0 3
+Time taken: 1525.0ms. myNextMove=(0,0,3)=state(-1)
+---------------------
+Move number: 2
+Time taken (debug): 735.0ms.
+---------------------
+Next Move: 0 1 1
+Time taken: 1629.0ms. myNextMove=(0,1,1)=state(-1)
+---------------------
+Move number: 3

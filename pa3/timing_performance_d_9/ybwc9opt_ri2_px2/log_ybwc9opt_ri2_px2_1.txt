@@ -1,0 +1,185 @@
+Min Max Agent - Depth=9
+ri=2, px=2
+Move number: 0
+Time taken (debug): 2467.0ms.
+---------------------
+Next Move: 0 0 1
+Time taken: 18442.0ms. myNextMove=(0,0,1)=state(-1)
+---------------------
+Move number: 1
+Time taken (debug): 2625.0ms.
+---------------------
+Next Move: 0 0 3
+Time taken: 17870.0ms. myNextMove=(0,0,3)=state(-1)
+---------------------
+Move number: 2
+Time taken (debug): 2497.0ms.
+---------------------
+Next Move: 0 1 1
+Time taken: 18114.0ms. myNextMove=(0,1,1)=state(-1)
+---------------------
+Move number: 3
+Time taken (debug): 2467.0ms.
+---------------------
+Next Move: 0 1 3
+Time taken: 16976.0ms. myNextMove=(0,1,3)=state(-1)
+---------------------
+Move number: 4
+Time taken (debug): 2434.0ms.
+---------------------
+Next Move: 0 2 1
+Time taken: 16365.0ms. myNextMove=(0,2,1)=state(-1)
+---------------------
+Move number: 5
+Time taken (debug): 2271.0ms.
+---------------------
+Next Move: 0 2 3
+Time taken: 14924.0ms. myNextMove=(0,2,3)=state(-1)
+---------------------
+Move number: 6
+Time taken (debug): 2132.0ms.
+---------------------
+Next Move: 0 3 1
+Time taken: 13967.0ms. myNextMove=(0,3,1)=state(-1)
+---------------------
+Move number: 7
+Time taken (debug): 1326.0ms.
+---------------------
+Next Move: 1 0 0
+Time taken: 10935.0ms. myNextMove=(1,0,0)=state(-1)
+---------------------
+Move number: 8
+Time taken (debug): 1198.0ms.
+---------------------
+Next Move: 1 0 2
+Time taken: 9631.0ms. myNextMove=(1,0,2)=state(-1)
+---------------------
+Move number: 9
+Time taken (debug): 1087.0ms.
+---------------------
+Next Move: 1 1 0
+Time taken: 8291.0ms. myNextMove=(1,1,0)=state(-1)
+---------------------
+Move number: 10
+Time taken (debug): 901.0ms.
+---------------------
+Next Move: 1 1 2
+Time taken: 6628.0ms. myNextMove=(1,1,2)=state(-1)
+---------------------
+Move number: 11
+Time taken (debug): 753.0ms.
+---------------------
+Next Move: 1 2 0
+Time taken: 5062.0ms. myNextMove=(1,2,0)=state(-1)
+---------------------
+Move number: 12
+Time taken (debug): 623.0ms.
+---------------------
+Next Move: 1 2 2
+Time taken: 3816.0ms. myNextMove=(1,2,2)=state(-1)
+---------------------
+Move number: 13
+Time taken (debug): 469.0ms.
+---------------------
+Next Move: 1 3 0
+Time taken: 2802.0ms. myNextMove=(1,3,0)=state(-1)
+---------------------
+Move number: 14
+Time taken (debug): 334.0ms.
+---------------------
+Next Move: 1 3 2
+Time taken: 1987.0ms. myNextMove=(1,3,2)=state(-1)
+---------------------
+Move number: 15
+Time taken (debug): 1.0ms.
+---------------------
+Next Move: 2 0 1
+Time taken: 4333.0ms. myNextMove=(2,0,1)=state(-1)
+---------------------
+Move number: 16
+Time taken (debug): 1.0ms.
+---------------------
+Next Move: 2 0 3
+Time taken: 3224.0ms. myNextMove=(2,0,3)=state(-1)
+---------------------
+Move number: 17
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 2 1 1
+Time taken: 2276.0ms. myNextMove=(2,1,1)=state(-1)
+---------------------
+Move number: 18
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 2 1 3
+Time taken: 1540.0ms. myNextMove=(2,1,3)=state(-1)
+---------------------
+Move number: 19
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 2 2 1
+Time taken: 998.0ms. myNextMove=(2,2,1)=state(-1)
+---------------------
+Move number: 20
+Time taken (debug): 1.0ms.
+---------------------
+Next Move: 2 2 3
+Time taken: 636.0ms. myNextMove=(2,2,3)=state(-1)
+---------------------
+Move number: 21
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 2 3 1
+Time taken: 410.0ms. myNextMove=(2,3,1)=state(-1)
+---------------------
+Move number: 22
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 3 0 0
+Time taken: 232.0ms. myNextMove=(3,0,0)=state(-1)
+---------------------
+Move number: 23
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 3 0 2
+Time taken: 123.0ms. myNextMove=(3,0,2)=state(-1)
+---------------------
+Move number: 24
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 3 1 0
+Time taken: 66.0ms. myNextMove=(3,1,0)=state(-1)
+---------------------
+Move number: 25
+Time taken (debug): 1.0ms.
+---------------------
+Next Move: 3 1 2
+Time taken: 31.0ms. myNextMove=(3,1,2)=state(-1)
+---------------------
+Move number: 26
+Time taken (debug): 1.0ms.
+---------------------
+Next Move: 3 2 0
+Time taken: 15.0ms. myNextMove=(3,2,0)=state(-1)
+---------------------
+Move number: 27
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 3 2 2
+Time taken: 5.0ms. myNextMove=(3,2,2)=state(-1)
+---------------------
+Move number: 28
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 3 3 0
+Time taken: 2.0ms. myNextMove=(3,3,0)=state(-1)
+---------------------
+Move number: 29
+Time taken (debug): 0.0ms.
+---------------------
+Next Move: 3 3 2
+Time taken: 1.0ms. myNextMove=(3,3,2)=state(-1)
+---------------------
+Player1: MinMaxAgent Win Rate = 1.0
+Player2: MinMaxAgentOpt Win Rate = 0.0
+Tie Rate: 0.0
