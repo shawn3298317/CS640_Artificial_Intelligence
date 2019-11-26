@@ -121,20 +121,6 @@ public class MinMaxAgent extends BaseAgent {
 
 	}
 
-	private Double getPotentialWinLineScore(List<positionTicTacToe> state, int player) {
-
-		
-		Double potential_win_line_score = 0.0;
-
-		// for (int mark_count: GameUtil.getPotentialWinLineCount(state, player)) {
-		// 	// System.out.println("mark_count:" + mark_count);
-		// 	potential_win_line_score += Math.pow(Math.E, mark_count);
-		// }
-		// Scanner scanner = new Scanner(System.in);
-		// int dummy = scanner.nextInt();
-		return potential_win_line_score;
-	}
-
 	protected Double getValueFromState(List<positionTicTacToe> state) {
 
 		// System.out.println("Player:" + this.player + " opponent:" + this.opponent_player);
