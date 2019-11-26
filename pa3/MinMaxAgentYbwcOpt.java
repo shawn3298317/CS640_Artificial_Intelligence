@@ -45,8 +45,7 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 		}
 	}
 
-	}
-
+	
 	public MinMaxAgentYbwcOpt(int setPlayer, int depth, boolean m_use_corner_score, boolean debug)
 	{
 		super(setPlayer);
