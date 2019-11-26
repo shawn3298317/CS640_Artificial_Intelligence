@@ -1,0 +1,26 @@
+Min Max Agent - Depth=9
+Move number: 0
+0 0 0
+Time taken: 44200.0ms. myNextMove=(0,0,0)=state(-1)
+---------------------
+Move number: 1
+0 0 1
+Time taken: 33375.0ms. myNextMove=(0,0,1)=state(-1)
+---------------------
+Move number: 2
+0 0 2
+Time taken: 40134.0ms. myNextMove=(0,0,2)=state(-1)
+---------------------
+Move number: 3
+0 0 3
+Time taken: 47581.0ms. myNextMove=(0,0,3)=state(-1)
+---------------------
+Move number: 4
+0 1 0
+Time taken: 47065.0ms. myNextMove=(0,1,0)=state(-1)
+---------------------
+Move number: 5
+0 1 1
+Time taken: 44270.0ms. myNextMove=(0,1,1)=state(-1)
+---------------------
+Move number: 6

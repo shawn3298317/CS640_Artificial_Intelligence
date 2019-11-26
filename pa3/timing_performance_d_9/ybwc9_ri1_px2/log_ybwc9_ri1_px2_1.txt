@@ -1,0 +1,45 @@
+Min Max Agent - Depth=9
+ri=1, px=2
+Move number: 0
+Next Move: 0 0 0
+Time taken: 19022.0ms. myNextMove=(0,0,0)=state(-1)
+---------------------
+0 0 1
+Time taken: 96.0ms. myNextMove=(0,0,1)=state(-1)
+---------------------
+Move number: 1
+Next Move: 0 0 2
+Time taken: 26035.0ms. myNextMove=(0,0,2)=state(-1)
+---------------------
+0 0 3
+Time taken: 44.0ms. myNextMove=(0,0,3)=state(-1)
+---------------------
+Move number: 2
+Next Move: 0 1 0
+Time taken: 26234.0ms. myNextMove=(0,1,0)=state(-1)
+---------------------
+0 1 1
+Time taken: 45.0ms. myNextMove=(0,1,1)=state(-1)
+---------------------
+Move number: 3
+Next Move: 0 1 2
+Time taken: 25596.0ms. myNextMove=(0,1,2)=state(-1)
+---------------------
+0 1 3
+Time taken: 34.0ms. myNextMove=(0,1,3)=state(-1)
+---------------------
+Move number: 4
+Next Move: 0 2 0
+Time taken: 17020.0ms. myNextMove=(0,2,0)=state(-1)
+---------------------
+0 2 1
+Time taken: 34.0ms. myNextMove=(0,2,1)=state(-1)
+---------------------
+Move number: 5
+Next Move: 0 2 2
+Time taken: 17854.0ms. myNextMove=(0,2,2)=state(-1)
+---------------------
+0 2 3
+Time taken: 43.0ms. myNextMove=(0,2,3)=state(-1)
+---------------------
+Move number: 6

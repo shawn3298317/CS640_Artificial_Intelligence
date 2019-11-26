@@ -6,11 +6,21 @@ public class MinMaxAgent extends BaseAgent {
 	public int opponent_player;
 	private int m_depth;
 	private boolean m_use_corner_score;
+	private boolean output_log;
+
 
 	public MinMaxAgent(int setPlayer, int depth, boolean m_use_corner_score)
 	{
 		super(setPlayer);
 		m_depth = depth;
+		this.output_log = false;
+	}
+
+	public MinMaxAgent(int setPlayer, int depth, boolean m_use_corner_score, boolean output_log)
+	{
+		super(setPlayer);
+		m_depth = depth;
+		this.output_log = output_log;
 	}
 
 	@Override
@@ -34,7 +44,6 @@ public class MinMaxAgent extends BaseAgent {
 		Double alpha = -1000000.0;
 		Double beta = 1000000.0;
 
-
 		for (int pos = 0; pos < board.size(); pos++) {
 			if (board.get(pos).state != 0) {
 				continue; // marked position
@@ -55,11 +64,11 @@ public class MinMaxAgent extends BaseAgent {
 				break;
 		}
 
-		System.out.println(myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
-
 		long end = System.currentTimeMillis();
-
-		System.out.println("Time taken: " + (float)(end-start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
+		if(this.output_log == true){
+			System.out.println(myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
+			System.out.println("Time taken: " + (float)(end-start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
+		}
 
 		return myNextMove;
 	}

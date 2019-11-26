@@ -19,7 +19,7 @@ public class runTicTacToe {
 		initializePlayers();
 	}
 	public void initializePlayers() {
-		player1 = new RandomAgent(1);
+		player1 = new MinMaxAgent(1, 6, false);
 
 		int depth = 8;
 		System.out.println("Min Max Agent - Depth=" + depth);

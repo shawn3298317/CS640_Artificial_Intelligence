@@ -2,7 +2,8 @@
 
 ## TODO:
 1. Re-run the tests for ybwc.
-2. Implement dynamic reduction in remain_iter and test.
+2. Implement dynamic increment as game progresses because the overall time doesn't matter. Rather, the max time per move matters.
+3. If time limit is hit, then just randomly run a move. Or should we dedicate one thread to do a less depth answer?
 
 ## Agents to Implement
 - Random Agents (baseline)
