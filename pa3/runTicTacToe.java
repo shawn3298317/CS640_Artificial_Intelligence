@@ -19,8 +19,9 @@ public class runTicTacToe {
 		initializePlayers();
 	}
 	public void initializePlayers() {
-		player1 = new RandomAgent(1);
-		player2 = new MinMaxAgent(2, 4, false);
+		// player1 = new RandomAgent(1);
+		player1 = new MinMaxAgent(2, 4, false);
+		player2 = new MinMaxAgent(2, 4, true);
 		// player2 = new RandomAgent(2);
 	}
 	public void resetGame() {

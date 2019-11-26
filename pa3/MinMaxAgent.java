@@ -5,12 +5,15 @@ public class MinMaxAgent extends BaseAgent {
 	public int player; //1 for player 1 and 2 for player 2
 	public int opponent_player;
 	private int m_depth;
-	private boolean m_use_corner_score;
+	private boolean m_use_pot_win_score;
 
-	public MinMaxAgent(int setPlayer, int depth, boolean m_use_corner_score)
+	public MinMaxAgent(int setPlayer, int depth, boolean use_pot_win_score)
 	{
 		super(setPlayer);
 		m_depth = depth;
+		m_use_pot_win_score = use_pot_win_score;
+		player = setPlayer;
+		opponent_player = (player == 2) ? 1 : 2;
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class MinMaxAgent extends BaseAgent {
 	}
 
 	private Double minMax(List<positionTicTacToe> board, int depth, boolean maximizer) {
-		
+
 		if ((depth == 0) || (GameUtil.isEnded(board) != 0)) {
 			return getValueFromState(board);
 		}
@@ -118,34 +121,60 @@ public class MinMaxAgent extends BaseAgent {
 
 	}
 
+	private Double getPotentialWinLineScore(List<positionTicTacToe> state, int player) {
+
+		
+		Double potential_win_line_score = 0.0;
+
+		// for (int mark_count: GameUtil.getPotentialWinLineCount(state, player)) {
+		// 	// System.out.println("mark_count:" + mark_count);
+		// 	potential_win_line_score += Math.pow(Math.E, mark_count);
+		// }
+		// Scanner scanner = new Scanner(System.in);
+		// int dummy = scanner.nextInt();
+		return potential_win_line_score;
+	}
+
 	protected Double getValueFromState(List<positionTicTacToe> state) {
 
+		// System.out.println("Player:" + this.player + " opponent:" + this.opponent_player);
 		// Has complete line(s)
 		Double terminal_score = 0.0;
 		int winner = GameUtil.isEnded(state);
 		if (winner == player) {
-			terminal_score = 20.0;
-			return terminal_score;
+			terminal_score = 250.0;
 		} else if (winner == opponent_player) {
-			terminal_score = -10.0;
-			return terminal_score;
+			terminal_score = -250.0;
 		}
 
-		// Corner Bonus
-		Double corner_score = 0.0;
-		int num_corners = 0;
+		// Possible un-blocked line(s)
+		Double max_potential_win_line_score = 0.0;
+		// Possible un-blocked line(s) [for opponent]
+		Double min_potential_win_line_score = 0.0;
+
+		if (m_use_pot_win_score == true) {
+			max_potential_win_line_score = GameUtil.getPotentialWinLineCount(state, this.player);
+			min_potential_win_line_score = -1.0 * GameUtil.getPotentialWinLineCount(state, this.opponent_player);
+		}
 		
-		for (int i = 0; i < GameUtil.cornerIndex.size(); i++) {
-			int corner_pos = GameUtil.cornerIndex.get(i);
-			if (state.get(corner_pos).state == player) {
-				num_corners += 1;
-			}
-		}
-		if (m_use_corner_score)
-			corner_score = num_corners * 1.0;
-		else
-			corner_score = 0.0;
 
-		return corner_score;
+		// // Corner Bonus
+		// Double corner_score = 0.0;
+		// int num_corners = 0;
+		
+		// for (int i = 0; i < GameUtil.cornerIndex.size(); i++) {
+		// 	int corner_pos = GameUtil.cornerIndex.get(i);
+		// 	if (state.get(corner_pos).state == player) {
+		// 		num_corners += 1;
+		// 	}
+		// }
+		// if (m_use_corner_score)
+		// 	corner_score = num_corners * 1.0;
+		// else
+		// 	corner_score = 0.0;
+
+		Double heuristic_score = terminal_score + max_potential_win_line_score + min_potential_win_line_score;
+		// System.out.println("Score:" + heuristic_score + " term=" + terminal_score + " max=" + max_potential_win_line_score + " min=" + min_potential_win_line_score);
+		return heuristic_score;
 	}
 }

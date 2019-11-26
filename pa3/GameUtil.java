@@ -70,8 +70,6 @@ static int isEnded(List<positionTicTacToe> board) {
 
 static boolean hasXWinLines(List<positionTicTacToe> board, GamePattern pattern) {
 
-	
-
 	for(int i = 0; i<4; i++) {	
 		for(int j = 0; j<4;j++)
 		{
@@ -85,6 +83,240 @@ static boolean hasXWinLines(List<positionTicTacToe> board, GamePattern pattern) 
 		}
 	}
 	return false;
+}
+
+
+
+static Double getPotentialWinLineCount(List<positionTicTacToe> board, int player) {
+
+	Double score = 0.0;
+	// List<Integer> total_counts = new ArrayList<Integer>();
+	int mark_counts = 0;
+	
+	// X axis counts
+	for(int i = 0; i<4; i++) {	
+		for(int j = 0; j<4;j++)
+		{
+			mark_counts = 0;	
+			for (int n = 0; n < 4; n++) {
+				if (board.get(GameUtil.positionToIndex(n, i, j)).state == player) {
+					mark_counts += 1;
+				} else if (board.get(GameUtil.positionToIndex(n, i, j)).state == 0) {
+					continue;
+				} else {
+					mark_counts = 0;
+					break;
+				}
+			}
+
+			// total_counts.add(new Integer(mark_counts));
+			score += (1 << mark_counts);
+		}
+	}
+
+	// Y axis counts
+	for(int i = 0; i<4; i++) {	
+		for(int j = 0; j<4;j++)
+		{
+			mark_counts = 0;
+			for (int n = 0; n < 4; n++) {
+				if (board.get(GameUtil.positionToIndex(i, n, j)).state == player) {
+					mark_counts += 1;
+				} else if (board.get(GameUtil.positionToIndex(i, n, j)).state == 0) {
+					continue;
+				} else {
+					mark_counts = 0;
+					break;
+				}
+			}
+			score += (1 << mark_counts);
+			// total_counts.add(new Integer(mark_counts));
+			// total_counts.add(mark_counts);
+		}
+	}
+
+	// Z axis counts
+	for(int i = 0; i<4; i++) {	
+		for(int j = 0; j<4;j++)
+		{
+			mark_counts = 0;
+			for (int n = 0; n < 4; n++) {
+				if (board.get(GameUtil.positionToIndex(i, j, n)).state == player) {
+					mark_counts += 1;
+				} else if (board.get(GameUtil.positionToIndex(i, j, n)).state == 0) {
+					continue;
+				} else {
+					mark_counts = 0;
+					break;
+				}
+			}
+			score += (1 << mark_counts);
+			// total_counts.add(new Integer(mark_counts));
+			// total_counts.add(mark_counts);
+		}
+	}
+
+	// XY (anti)diagonal counts
+	for(int i = 0; i<4; i++) {
+		// diagonal
+		mark_counts = 0;
+		for (int n = 0; n < 4; n++) {
+			if (board.get(GameUtil.positionToIndex(n, n, i)).state == player) {
+				mark_counts += 1;
+			} else if (board.get(GameUtil.positionToIndex(n, n, i)).state == 0) {
+				continue;
+			} else {
+				mark_counts = 0;
+				break;
+			}
+		}
+		score += (1 << mark_counts);
+		// total_counts.add(mark_counts);
+	}
+
+	for(int i = 0; i<4; i++) {
+		// anti-diagonal
+		mark_counts = 0;
+		for (int n = 0; n < 4; n++) {
+			if (board.get(GameUtil.positionToIndex(n, 3-n, i)).state == player) {
+				mark_counts += 1;
+			} else if (board.get(GameUtil.positionToIndex(n, 3-n, i)).state == 0) {
+				continue;
+			} else {
+				mark_counts = 0;
+				break;
+			}
+		}
+		score += (1 << mark_counts);
+		// total_counts.add(mark_counts);
+	}
+
+	// YZ (anti)diagonal counts
+	for(int i = 0; i<4; i++) {
+		// diagonal
+		mark_counts = 0;
+		for (int n = 0; n < 4; n++) {
+			if (board.get(GameUtil.positionToIndex(i, n, n)).state == player) {
+				mark_counts += 1;
+			} else if (board.get(GameUtil.positionToIndex(i, n, n)).state == 0) {
+				continue;
+			} else {
+				mark_counts = 0;
+				break;
+			}
+		}
+		score += (1 << mark_counts);
+		// total_counts.add(mark_counts);
+	}
+
+	for(int i = 0; i<4; i++) {
+		// anti-diagonal
+		mark_counts = 0;
+		for (int n = 0; n < 4; n++) {
+			if (board.get(GameUtil.positionToIndex(i, n, 3-n)).state == player) {
+				mark_counts += 1;
+			} else if (board.get(GameUtil.positionToIndex(i, n, 3-n)).state == 0) {
+				continue;
+			} else {
+				mark_counts = 0;
+				break;
+			}
+		}
+		score += (1 << mark_counts);
+		// total_counts.add(mark_counts);
+	}
+	// XZ (anti)diagonal counts
+	for(int i = 0; i<4; i++) {
+		// diagonal
+		mark_counts = 0;
+		for (int n = 0; n < 4; n++) {
+			if (board.get(GameUtil.positionToIndex(n, i, n)).state == player) {
+				mark_counts += 1;
+			} else if (board.get(GameUtil.positionToIndex(n, i, n)).state == 0) {
+				continue;
+			} else {
+				mark_counts = 0;
+				break;
+			}
+		}
+		score += (1 << mark_counts);
+		// total_counts.add(mark_counts);
+	}
+
+	for(int i = 0; i<4; i++) {
+		// anti-diagonal
+		mark_counts = 0;
+		for (int n = 0; n < 4; n++) {
+			if (board.get(GameUtil.positionToIndex(n, i, 3-n)).state == player) {
+				mark_counts += 1;
+			} else if (board.get(GameUtil.positionToIndex(n, i, 3-n)).state == 0) {
+				continue;
+			} else {
+				mark_counts = 0;
+				break;
+			}
+		}
+		score += (1 << mark_counts);
+		// total_counts.add(mark_counts);
+	}
+	// XYZ (anti)diagonal counts
+	mark_counts = 0;
+	for (int n = 0; n < 4; n++) {
+		if (board.get(GameUtil.positionToIndex(n, n, n)).state == player) {
+			mark_counts += 1;
+		} else if (board.get(GameUtil.positionToIndex(n, n, n)).state == 0) {
+			continue;
+		} else {
+			mark_counts = 0;
+			break;
+		}
+	}
+	score += (1 << mark_counts);
+	// total_counts.add(mark_counts);
+
+	mark_counts = 0;
+	for (int n = 0; n < 4; n++) {
+		if (board.get(GameUtil.positionToIndex(n, n, 3-n)).state == player) {
+			mark_counts += 1;
+		} else if (board.get(GameUtil.positionToIndex(n, n, 3-n)).state == 0) {
+			continue;
+		} else {
+			mark_counts = 0;
+			break;
+		}
+	}
+	score += (1 << mark_counts);
+	// total_counts.add(mark_counts);
+	
+	mark_counts = 0;
+	for (int n = 0; n < 4; n++) {
+		if (board.get(GameUtil.positionToIndex(3-n, n, n)).state == player) {
+			mark_counts += 1;
+		} else if (board.get(GameUtil.positionToIndex(3-n, n, n)).state == 0) {
+			continue;
+		} else {
+			mark_counts = 0;
+			break;
+		}
+	}
+	score += (1 << mark_counts);
+	// total_counts.add(mark_counts);
+
+	mark_counts = 0;
+	for (int n = 0; n < 4; n++) {
+		if (board.get(GameUtil.positionToIndex(n, 3-n, n)).state == player) {
+			mark_counts += 1;
+		} else if (board.get(GameUtil.positionToIndex(n, 3-n, n)).state == 0) {
+			continue;
+		} else {
+			mark_counts = 0;
+			break;
+		}
+	}
+	score += (1 << mark_counts);
+	// total_counts.add(mark_counts);
+
+	return score;
 }
 
 static boolean hasYWinLines(List<positionTicTacToe> board, GamePattern pattern) {
