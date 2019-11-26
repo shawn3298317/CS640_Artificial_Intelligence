@@ -24,6 +24,8 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 	private int remain_iter_reduce_factor;
 	private int threadPool;
 
+	private boolean debug;
+
 	public MinMaxAgentYbwcOpt(int setPlayer, int depth, boolean m_use_corner_score)
 	{
 		super(setPlayer);
@@ -37,7 +39,31 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 		this.dynamic_remain_iter = false;		// TODO: Not implemented yet.
 		this.remain_iter_reduce_factor = 8;		// TODO: Not implemented yet. 64 moves. 64/8 = 8 (initial remain_iter)
 
-		System.out.println("ri=" + this.remain_iter + ", px=" + px);
+		this.debug = false;
+		if(this.debug == true){
+			System.out.println("ri=" + this.remain_iter + ", px=" + px);
+		}
+	}
+
+	}
+
+	public MinMaxAgentYbwcOpt(int setPlayer, int depth, boolean m_use_corner_score, boolean debug)
+	{
+		super(setPlayer);
+		int px = 2;
+		this.m_depth = depth;
+		int processors = Runtime.getRuntime().availableProcessors();
+		this.threadPool = processors * px;
+		this.steps_taken = 0;
+
+		this.remain_iter = processors/2;
+		this.dynamic_remain_iter = false;		// TODO: Not implemented yet.
+		this.remain_iter_reduce_factor = 8;		// TODO: Not implemented yet. 64 moves. 64/8 = 8 (initial remain_iter)
+
+		this.debug = debug;
+		if(this.debug == true) {
+			System.out.println("ri=" + this.remain_iter + ", px=" + px);
+		}
 	}
 
 	@Override
@@ -157,7 +183,9 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 		};
 		list.clear();
 		long step_1_done = System.currentTimeMillis();
-		System.out.println("Time taken (debug): " + (float)(step_1_done-start) + "ms." +  "\n---------------------");
+		if(this.debug == true) {
+			System.out.println("Time taken (debug): " + (float) (step_1_done - start) + "ms." + "\n---------------------");
+		}
 
 		// Multi-thread on remaining branches using alpha-beta value found from sequential run above.
 		for (; pos < board.size(); pos++) {
@@ -224,10 +252,14 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 
 		this.steps_taken++;
 		this.executorService.shutdownNow();
-		System.out.println("Next Move: " + myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
-
+		if(this.debug == true) {
+			System.out.println("Next Move: " + myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
+		}
 		long end = System.currentTimeMillis();
-		System.out.println("Time taken: " + (float)(end-start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
+
+		if(this.debug == true) {
+			System.out.println("Time taken: " + (float) (end - start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
+		}
 
 		return myNextMove;
 	}
