@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.concurrent.*;
 
-public class MinMaxAgentYbwcOpt extends BaseAgent {
+public class MinMaxAgentYbwcOpt2 extends BaseAgent {
 
 	class FutureStorage{
 		public Future<Double> fut;
@@ -16,6 +16,8 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 	public int player; //1 for player 1 and 2 for player 2
 	public int opponent_player;
 	private int m_depth;
+	private int m_depth1;
+	private int m_depth2;
 	private boolean m_use_pot_win_score;
 	public ExecutorService executorService;
 	private int remain_iter;
@@ -23,17 +25,25 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 	private boolean dynamic_remain_iter;
 	private int remain_iter_reduce_factor;
 	private int threadPool;
+	private int switchToMultiThread;
 
 	private boolean debug;
 
-	public MinMaxAgentYbwcOpt(int setPlayer, int depth, boolean m_use_pot_win_score)
+
+    public MinMaxAgentYbwcOpt2(int setPlayer)
+    {
+        super(setPlayer);
+        init(setPlayer, 4, true,false);
+    }
+
+	public MinMaxAgentYbwcOpt2(int setPlayer, int depth, boolean m_use_pot_win_score)
 	{
 		super(setPlayer);
 		init(setPlayer, depth, m_use_pot_win_score, false);
 	}
 
 
-	public MinMaxAgentYbwcOpt(int setPlayer, int depth, boolean m_use_pot_win_score, boolean debug)
+	public MinMaxAgentYbwcOpt2(int setPlayer, int depth, boolean m_use_pot_win_score, boolean debug)
 	{
 		super(setPlayer);
 		init(setPlayer, depth, m_use_pot_win_score, debug);
@@ -45,12 +55,16 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 		this.opponent_player = (player == 2) ? 1 : 2;
 
 		int px = 2;
-		this.m_depth = depth;
+		this.m_depth1 = depth;
+		this.m_depth2 = depth + 1;
+		this.m_depth = this.m_depth1;
+		this.switchToMultiThread = 7;
+
 		int processors = Runtime.getRuntime().availableProcessors();
 		this.threadPool = processors * px;
 		this.steps_taken = 0;
 
-		this.remain_iter = 64/4;
+		this.remain_iter = 64/8;
 		this.dynamic_remain_iter = false;		// TODO: Not implemented yet.
 		this.remain_iter_reduce_factor = 8;		// TODO: Not implemented yet. 64 moves. 64/8 = 8 (initial remain_iter)
 
@@ -62,7 +76,7 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 
 	@Override
 	public String getAgentName() {
-		return new String("MinMaxAgentYbwcOpt");
+		return new String("MinMaxAgentYbwcOpt2");
 	}
 
 
@@ -76,7 +90,7 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 		long start = System.currentTimeMillis();
 		this.executorService = Executors.newFixedThreadPool(threadPool);
 
-        List<FutureStorage> list = new ArrayList<FutureStorage>();
+		List<FutureStorage> list = new ArrayList<FutureStorage>();
 		if(dynamic_remain_iter == true){
 			this.remain_iter = ((4 * 4 * 4) - this.steps_taken) / this.remain_iter_reduce_factor;
 		}
@@ -107,10 +121,16 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 				break;
 		}*/
 
+		if(this.steps_taken == this.switchToMultiThread) {    // Multi-Threading
+			this.m_depth = this.m_depth2;
+		}
+
+		if(this.debug == true)
+			System.out.println("ybwc2 | d=" + m_depth);
 
 		int pos = 0;
 		int iter = 0;
-		for(; pos<board.size() && iter < this.remain_iter; pos++){
+		for (; pos < board.size() && iter < this.remain_iter; pos++) {
 			if (board.get(pos).state != 0) {
 				continue; // marked position
 			} else {
@@ -118,7 +138,7 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 			}
 
 			board.get(pos).state = player;
-			Double cur_value = minMaxAlphaBeta(board, m_depth-1, alpha, beta, false);
+			Double cur_value = minMaxAlphaBeta(board, m_depth - 1, alpha, beta, false);
 			board.get(pos).state = 0; // back tracking
 			if (cur_value > max_value) {
 				max_value = cur_value;
@@ -128,6 +148,89 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 			if (alpha >= beta)
 				break;
 		}
+
+		// Multi-thread on remaining branches using alpha-beta value found from sequential run above.
+		for (; pos < board.size(); pos++) {
+			// Double cur_value = minMax(board, 4, false);
+			if (board.get(pos).state != 0) continue; // marked position
+
+			List<positionTicTacToe> board_clone = new ArrayList<positionTicTacToe>();
+			for (int j = 0; j < board.size(); j++) {
+				board_clone.add(create_copy(board.get(j)));
+			};
+
+			class minMaxCallable implements Callable<Double> {
+				Double alpha;
+				Double beta;
+				List<positionTicTacToe> board_clone;
+				int pos;
+				int player;
+				int m_depth;
+
+				public minMaxCallable(List<positionTicTacToe> board_clone, int pos, int player, Double alpha, Double beta, int m_depth) {
+					this.board_clone = board_clone;
+					this.alpha = alpha;
+					this.beta = beta;
+					this.pos = pos;
+					this.player = player;
+					this.m_depth = m_depth;
+				}
+
+				@Override
+				public Double call() throws Exception {
+					Double cur_value = 0.0;
+					this.board_clone.get(this.pos).state = this.player;
+					cur_value = minMaxAlphaBeta(this.board_clone, this.m_depth - 1, this.alpha, this.beta, false);
+					return cur_value;
+				}
+			}
+			;
+			minMaxCallable minMax = new minMaxCallable(board_clone, pos, player, alpha, beta, m_depth);
+			Future<Double> f = executorService.submit(minMax);
+			list.add(new FutureStorage(f, pos));
+		}
+
+		// Wait for all the child threads to be completed.
+		for (FutureStorage futStorage : list) {
+			try {
+				Future<Double> fut = futStorage.fut;
+				int futPos = futStorage.pos;
+
+				//print the return value of Future, notice the output delay in console
+				// because Future.get() waits for task to get completed
+				Double cur_value = fut.get();
+
+				if (cur_value > max_value) {
+					max_value = cur_value;
+					myNextMove = GameUtil.indexToPosition(futPos);
+					//					System.out.println("cur > max. Set next move to futPos(" + futPos + ")");
+				}
+				alpha = Math.max(alpha, max_value);
+				if (alpha >= beta)
+					break;
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+
+/*		else {	// Sequential
+			int less_depth = m_depth - 1;
+			System.out.println("ybwc2 | d=" + less_depth);
+			for (int pos=0; pos < board.size(); pos++) {
+				if (board.get(pos).state != 0) continue; // marked position
+				board.get(pos).state = player;
+				// Double cur_value = minMax(board, 4, false);
+				Double cur_value = minMaxAlphaBeta(board, less_depth-1, alpha, beta, false);
+				board.get(pos).state = 0; // back tracking
+				if (cur_value > max_value) {
+					max_value = cur_value;
+					myNextMove = GameUtil.indexToPosition(pos);
+				}
+				alpha = Math.max(alpha, max_value);
+				if (alpha >= beta)
+					break;
+			}
+		}*/
 
 //		System.out.println("pos: " + pos);
 
@@ -204,69 +307,6 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 			System.out.println("Time taken (debug): " + (float) (step_1_done - start) + "ms." + "\n---------------------");
 		}*/
 
-		// Multi-thread on remaining branches using alpha-beta value found from sequential run above.
-		for (; pos < board.size(); pos++) {
-			// Double cur_value = minMax(board, 4, false);
-			if (board.get(pos).state != 0) continue; // marked position
-
-			List<positionTicTacToe> board_clone = new ArrayList<positionTicTacToe>();
-			for(int j=0; j<board.size(); j++){
-				board_clone.add(create_copy(board.get(j)));
-			};
-
-			class minMaxCallable implements Callable<Double> {
-				Double alpha;
-				Double beta;
-				List<positionTicTacToe> board_clone;
-				int pos;
-				int player;
-				int m_depth;
-
-				public minMaxCallable (List<positionTicTacToe> board_clone, int pos, int player, Double alpha, Double beta, int m_depth) {
-					this.board_clone = board_clone;
-					this.alpha = alpha;
-					this.beta = beta;
-					this.pos = pos;
-					this.player = player;
-					this.m_depth = m_depth;
-				}
-
-				@Override
-				public Double call() throws Exception{
-					Double cur_value = 0.0;
-					this.board_clone.get(this.pos).state = this.player;
-					cur_value = minMaxAlphaBeta(this.board_clone, this.m_depth-1, this.alpha, this.beta, false);
-					return cur_value;
-				}
-			};
-			minMaxCallable minMax = new minMaxCallable(board_clone, pos, player, alpha, beta, m_depth);
-			Future<Double> f = executorService.submit(minMax);
-			list.add(new FutureStorage(f, pos));
-		}
-
-		// Wait for all the child threads to be completed.
-		for(FutureStorage futStorage : list) {
-			try {
-				Future<Double> fut = futStorage.fut;
-				int futPos = futStorage.pos;
-
-				//print the return value of Future, notice the output delay in console
-				// because Future.get() waits for task to get completed
-				Double cur_value = fut.get();
-
-				if (cur_value > max_value) {
-					max_value = cur_value;
-					myNextMove = GameUtil.indexToPosition(futPos);
-//					System.out.println("cur > max. Set next move to futPos(" + futPos + ")");
-				}
-				alpha = Math.max(alpha, max_value);
-				if (alpha >= beta)
-					break;
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			}
-		};
-
 		this.steps_taken++;
 		this.executorService.shutdownNow();
 		if(this.debug == true) {
@@ -277,13 +317,14 @@ public class MinMaxAgentYbwcOpt extends BaseAgent {
 		if(this.debug == true) {
 			System.out.println("Time taken: " + (float) (end - start) + "ms. myNextMove=" + myNextMove + "\n---------------------");
 		}
-		System.out.println(myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
+		if(this.debug == true)
+			System.out.println(myNextMove.x + " " + myNextMove.y + " " + myNextMove.z);
 
 		return myNextMove;
 	}
 
 	private Double minMax(List<positionTicTacToe> board, int depth, boolean maximizer) {
-		
+
 		if ((depth == 0) || (GameUtil.isEnded(board) != 0)) {
 			return getValueFromState(board);
 		}

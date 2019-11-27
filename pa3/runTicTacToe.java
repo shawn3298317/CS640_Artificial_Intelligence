@@ -18,10 +18,15 @@ public class runTicTacToe {
 		//initialize AI players
 		initializePlayers();
 	}
+
 	public void initializePlayers() {
-		// player1 = new RandomAgent(1);
-		player1 = new MinMaxAgent(1, 6, false);
-		player2 = new MinMaxAgentYbwcOpt(2, 6, true);
+		//player1 = new RandomAgent(1);
+		player1 = new MinMaxAgentOpt(1, 4, true);
+		// player2 = new MinMaxAgent(2, 4, true);
+		//player2 = new MinMaxAgent(2,5, true);
+		player2 = new MinMaxAgentYbwcOpt2(2, 4, true, false);
+
+		//player2 = new MinMaxAgentYbwcOpt(2, 4, true, false);
 		// player2 = new RandomAgent(2);
 	}
 	public void resetGame() {
@@ -125,11 +130,20 @@ public class runTicTacToe {
 	{
 		int result = 0;
 		Random rand = new Random();
-		int turn = rand.nextInt(2)+1; //1 = player1's turn, 2 = player2's turn, who go first is randomized 
-		
+		int turn = rand.nextInt(2)+1; //1 = player1's turn, 2 = player2's turn, who go first is randomized
+
+		int steps = 1;
+
 		result = GameUtil.isEnded(board);
 		while (result == 0) //game loop
 		{
+			BaseAgent player = turn == 1 ? player1 : player2;
+			String playerName = player.getAgentName();
+
+			System.out.println("Start (Move=" + (steps++) + ")---------");
+
+			long start = System.currentTimeMillis();
+
 			if(turn == 1)
 			{
 				positionTicTacToe player1NextMove = player1.getPolicyFromState(board, 1); //1 stands for player 1
@@ -148,8 +162,13 @@ public class runTicTacToe {
 				System.out.println("Error1!");
 			}
 			result = GameUtil.isEnded(board);
+//			System.out.println(board);
+
+			long end = System.currentTimeMillis();
+			System.out.println("playerName=" + playerName + ", Time taken: " + (float) (end - start) + "ms. \n---------------------");
 		}
-		
+
+
 		//game is ended
 		if(result == 1)
 		{
@@ -219,7 +238,7 @@ public class runTicTacToe {
 		runTicTacToe rttt = new runTicTacToe();
 
 		int n = 1;
-		boolean verbose = false;
+		boolean verbose = true;
 		if (args.length > 0) {
 			n = Integer.parseInt(args[0]);
 		}

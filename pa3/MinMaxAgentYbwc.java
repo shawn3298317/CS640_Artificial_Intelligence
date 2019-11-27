@@ -44,7 +44,11 @@ public class MinMaxAgentYbwc extends BaseAgent {
 	public String getAgentName() {
 		return new String("MinMaxAgentOpt");
 	}
-	
+
+	positionTicTacToe create_copy(positionTicTacToe pos){
+		return new positionTicTacToe(pos.x, pos.y, pos.y, pos.state);
+	}
+
 	@Override
 	public positionTicTacToe getPolicyFromState(List<positionTicTacToe> board, int player)
 	{
@@ -92,7 +96,7 @@ public class MinMaxAgentYbwc extends BaseAgent {
 
 			List<positionTicTacToe> board_clone = new ArrayList<positionTicTacToe>();
 			for(int j=0; j<board.size(); j++){
-				board_clone.add(board.get(j).create_copy());
+				board_clone.add(create_copy(board.get(j)));
 			};
 
 			class minMaxCallable implements Callable<Double> {

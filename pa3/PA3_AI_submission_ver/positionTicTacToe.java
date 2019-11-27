@@ -26,9 +26,4 @@ public class positionTicTacToe {
 		z = setZ;
 		state = -1;
 	}
-
-	@Override
-	public String toString(){
-		return "(" + x + "," + y + "," + z + ")=state(" + state + ")";
-	}
 }
