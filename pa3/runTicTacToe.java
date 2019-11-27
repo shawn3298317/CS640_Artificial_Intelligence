@@ -21,10 +21,10 @@ public class runTicTacToe {
 
 	public void initializePlayers() {
 		//player1 = new RandomAgent(1);
-		player1 = new MinMaxAgentOpt(1, 4, true);
+		player1 = new MinMaxAgent(1, 5, true);
 		// player2 = new MinMaxAgent(2, 4, true);
 		//player2 = new MinMaxAgent(2,5, true);
-		player2 = new MinMaxAgentYbwcOpt2(2, 4, true, false);
+		player2 = new MinMaxAgentYbwcOpt2(2, 2, true, false);
 
 		//player2 = new MinMaxAgentYbwcOpt(2, 4, true, false);
 		// player2 = new RandomAgent(2);
